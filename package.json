@@ -1,0 +1,5 @@
+{
+    "name": "seawork",
+    "private": true,
+    "workspaces": ["apps/*", "packages/*"]
+}
