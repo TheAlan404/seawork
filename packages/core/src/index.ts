@@ -5,6 +5,7 @@ import "dotenv/config";
 import { SeaworkConfig } from "./types/config";
 
 export * from "./types/config"
+export * from "./types/commands"
 
 export const startDevServer = async () => {
     const { TOKEN } = process.env;
