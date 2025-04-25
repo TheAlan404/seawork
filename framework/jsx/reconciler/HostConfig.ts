@@ -1,5 +1,5 @@
 import { type HostConfig } from "react-reconciler";
-import { DefaultEventPriority, DiscreteEventPriority } from "react-reconciler/constants";
+import { DefaultEventPriority } from "react-reconciler/constants";
 import { Container, InternalNode } from "./types";
 
 export type HostConfigProps = {
@@ -14,7 +14,7 @@ export type HostConfigProps = {
     HostContext: {};
     UpdatePayload: {};
     ChildSet: never;
-    TimeoutHandle: number;
+    TimeoutHandle: NodeJS.Timeout;
     NoTimeout: -1;
 };
 

@@ -17,6 +17,7 @@
         "@types/react-reconciler": "^0.31.0",
         "discord-api-types": "^0.38.1",
         "react-reconciler": "^0.32.0",
+        "typed-emitter": "^2.1.0",
         "typescript": "^5.0.0"
     },
     "pnpm": {
