@@ -18,7 +18,7 @@ export type HostConfigProps = {
     NoTimeout: -1;
 };
 
-export const SeaworkHostConfig: HostConfig<
+export const InternalHostConfig: HostConfig<
     HostConfigProps["Type"],
     HostConfigProps["Props"],
     HostConfigProps["Container"],

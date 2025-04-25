@@ -1,2 +1,5 @@
 # seawork
-Vite-powered Discord Bot Framework
+
+React-based Discord Bot Framework
+
+Extremely cursed.

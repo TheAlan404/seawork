@@ -17,14 +17,22 @@ export default function PingCommand() {
             <container>
                 <text>MEOW</text>
                 <text>MEOW</text>
+                <text>MEOW</text>
+                <section>
+                    <text>the</text>
+                    <accessory>
+                        <button
+                            customId="b"
+                        >
+                            mrow
+                        </button>
+                    </accessory>
+                </section>
+                <seperator spacing="lg" />
                 <actionRow>
+                    
                     <button
-                        customId="a"
-                    >
-                        mrow
-                    </button>
-                    <button
-                        customId="b"
+                        customId="x"
                         style="secondary"
                     >
                         mrrp

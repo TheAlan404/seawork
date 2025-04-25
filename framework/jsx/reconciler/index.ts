@@ -1,20 +1,20 @@
 import Reconciler, { OpaqueRoot } from "react-reconciler";
-import { SeaworkHostConfig } from "./HostConfig";
+import { InternalHostConfig } from "./HostConfig";
 import { Container } from "./types";
 import { ConcurrentRoot } from "react-reconciler/constants.js";
 import EventEmitter from "node:events";
 import TypedEmitter from "typed-emitter"
 import { createElement, Fragment } from "react";
 
-export const reconciler = Reconciler(SeaworkHostConfig);
+export const reconciler = Reconciler(InternalHostConfig);
 
-export type SeaworkReactRendererEvents = {
+export type InternalReactRendererEvents = {
     render: (container: Container) => void;
     renderError: (e: Error) => void;
     containerUpdated: () => void;
 };
 
-export class SeaworkReactRenderer extends (EventEmitter as new () => TypedEmitter<SeaworkReactRendererEvents>) {
+export class InternalReactRenderer extends (EventEmitter as new () => TypedEmitter<InternalReactRendererEvents>) {
     container: Container;
     root: OpaqueRoot;
 

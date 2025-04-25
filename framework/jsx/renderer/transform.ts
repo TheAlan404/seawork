@@ -96,7 +96,7 @@ export const transformNodeToDiscordComponent = (_node: InternalNode): any => {
             return {
                 type: 9,
                 components: node.children.filter(x => x.type !== "accessory").map(transformNodeToDiscordComponent),
-                accessory: transformNodeToDiscordComponent(node.children.find(x => x.type == "accessory")!),
+                accessory: transformNodeToDiscordComponent(node.children.find(x => x.type == "accessory")!.children[0]),
             };
         case "text":
             return {
