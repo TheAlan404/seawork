@@ -1,0 +1,31 @@
+{
+    "include": [
+        "**/*",
+        "**/.server/**/*",
+        "**/.client/**/*",
+        ".seawork/types/**/*"
+    ],
+    "compilerOptions": {
+        "target": "ESNext",
+        "module": "ESNext",
+        "moduleResolution": "bundler",
+        "jsx": "react-jsx",
+        "rootDirs": [
+            ".",
+            "./.seawork/types"
+        ],
+        "baseUrl": ".",
+        "paths": {
+        },
+        "esModuleInterop": true,
+        "noEmit": true,
+        "resolveJsonModule": true,
+        "skipLibCheck": true,
+        "allowArbitraryExtensions": true,
+        "isolatedModules": true,
+        "allowSyntheticDefaultImports": true,
+        "allowImportingTsExtensions": true,
+        "allowJs": true,
+        "strict": true
+    }
+}
