@@ -3,7 +3,6 @@ import { SeaworkReactRenderer } from "../reconciler";
 import { transformContainerToMessagePayload } from "./transform";
 import { InternalCommand } from "../../store/types";
 import { createElement } from "react";
-import { findCommandById, store } from "../../store/store";
 
 export type RendererInstance = {
     renderer: SeaworkReactRenderer;
@@ -57,7 +56,6 @@ export class RenderersManager {
 
             if(!inst.command.component) continue;
             inst.renderer.setRenderedNode(createElement(inst.command.component));
-            console.log("changed!")
         }
     }
 }

@@ -2,7 +2,7 @@ import { join } from "node:path";
 import { isModuleFile, removeExt, splitSegments, traverseAllFiles } from "./utils";
 import { InternalCommand } from "./types";
 import { store } from "./store";
-import { importWithHotReload } from "./import";
+import { hmrImport } from "./import";
 import { renderers } from "../jsx/renderer";
 
 const CommandsPath = join("bot", "commands");
@@ -30,15 +30,14 @@ export const loadCommands = async () => {
             if (pathSegments.length-1 == i) {
                 cmd.name = segment;
 
-                let module = await importWithHotReload(path, (mod) => {
+                hmrImport(path, (mod) => {
                     if (typeof mod.default == "function") cmd.component = mod.default;
+
                     renderers.updateCommand(cmd);
+                    console.log("Command loaded: " + id);
                 });
 
-                if (typeof module.default == "function") cmd.component = module.default;
-
                 parent.set(cmd.name, cmd);
-                console.log("Command loaded: " + pathSegments.join(" "));
                 break;
             } else {
                 if (!parent.has(segment)) parent.set(segment, {

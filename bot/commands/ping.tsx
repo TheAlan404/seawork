@@ -17,7 +17,6 @@ export default function PingCommand() {
             <container>
                 <text>MEOW</text>
                 <text>MEOW</text>
-                <text>MEOW</text>
                 <actionRow>
                     <button
                         customId="a"
