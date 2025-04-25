@@ -10,13 +10,13 @@
         "module": "ESNext",
         "moduleResolution": "bundler",
         "jsx": "react-jsx",
+        "lib": ["ESNext"],
         "rootDirs": [
             ".",
             "./.seawork/types"
         ],
         "baseUrl": ".",
-        "paths": {
-        },
+        "paths": {},
         "esModuleInterop": true,
         "noEmit": true,
         "resolveJsonModule": true,

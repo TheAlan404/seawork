@@ -4,6 +4,8 @@ import { client } from "./client";
 import { Events } from "discord.js";
 import { traverseAllFiles } from "./store/load";
 
+console.log("Starting Sea Framework...");
+
 client.on(Events.ClientReady, (readyClient) => {
     console.log(`Logged in as ${readyClient.user.tag} !`);
 });
@@ -13,5 +15,3 @@ if(config.login !== false) {
     if(!!token) client.login(token);
     else console.log("Bot token missing!");
 }
-
-console.log(traverseAllFiles("bot"))

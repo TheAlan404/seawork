@@ -13,9 +13,15 @@
         "vite": "^5.0.0"
     },
     "devDependencies": {
+        "@types/react": "^19.1.2",
         "@types/react-reconciler": "^0.31.0",
         "discord-api-types": "^0.38.1",
         "react-reconciler": "^0.32.0",
         "typescript": "^5.0.0"
+    },
+    "pnpm": {
+        "patchedDependencies": {
+            "@types/react@19.1.2": "patches/@types__react@19.1.2.patch"
+        }
     }
 }

@@ -1,9 +1,8 @@
-import { string } from "@seawork/core";
 import { Command } from "./+types/ping"
 import { useEffect, useState } from "react";
 
 export const options = () => [
-    string("mrow"),
+    // string("mrow"),
 ];
 
 export default function PingCommand() {
