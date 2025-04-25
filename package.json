@@ -1,5 +1,21 @@
 {
-    "name": "seawork",
-    "private": true,
-    "workspaces": ["apps/*", "packages/*"]
+    "name": "@seawork/bot",
+    "type": "module",
+    "scripts": {
+        "dev": "node --import @loaderkit/ts --import dynohot ./framework/index.ts"
+    },
+    "dependencies": {
+        "@loaderkit/ts": "^2.1.1",
+        "discord.js": "^14.11.0",
+        "dotenv": "^16.5.0",
+        "dynohot": "^2.1.1",
+        "react": "^19.1.0",
+        "vite": "^5.0.0"
+    },
+    "devDependencies": {
+        "@types/react-reconciler": "^0.31.0",
+        "discord-api-types": "^0.38.1",
+        "react-reconciler": "^0.32.0",
+        "typescript": "^5.0.0"
+    }
 }

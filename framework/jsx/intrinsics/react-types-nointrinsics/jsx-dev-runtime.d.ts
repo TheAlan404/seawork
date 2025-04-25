@@ -1,5 +1,5 @@
-import * as React from "./";
-export { Fragment } from "./";
+import * as React from ".";
+export { Fragment } from ".";
 
 export namespace JSX {
     type ElementType = React.JSX.ElementType;

@@ -1,6 +1,7 @@
 import { Client, Interaction, MessagePayload, Routes } from "discord.js";
-import { Container, InternalNode, reconciler } from "../../../../../packages/core/src/dev/reconciler";
 import { ConcurrentRoot } from "react-reconciler/constants";
+import { Container, InternalNode } from "../reconciler/types";
+import { reconciler } from "../reconciler";
 
 export const createInteractionRenderer = (
     // client: Client,
