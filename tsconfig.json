@@ -24,7 +24,6 @@
         "allowSyntheticDefaultImports": true,
         "allowImportingTsExtensions": true,
         "allowJs": true,
-        "allowUmdGlobalAccess": true,
         "strict": true
     }
 }

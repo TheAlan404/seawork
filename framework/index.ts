@@ -3,12 +3,15 @@ import config from "../seawork.config";
 import { client } from "./client";
 import { Events } from "discord.js";
 import { loadCommands } from "./store/load";
+import { handleInteraction } from "./handlers/interaction";
 
 console.log("Starting Sea Framework...");
 
 client.on(Events.ClientReady, (readyClient) => {
     console.log(`Logged in as ${readyClient.user.tag} !`);
 });
+
+client.on(Events.InteractionCreate, handleInteraction);
 
 if(config.login !== false) {
     let token = client.token ?? process.env.TOKEN;
@@ -22,5 +25,3 @@ loadCommands();
 
 // Keep event loop running in case we dont log in etc
 setInterval(()=>{},1);
-
-import.meta.hot?.accept();

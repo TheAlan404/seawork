@@ -10,7 +10,9 @@ export const isModuleFile = (path: string) => [
     ".js",
 ].includes(extname(path));
 
-export const noExtFilename = (path: string) => basename(path).slice(0, extname(path).length);
+export const removeExt = (path: string) => {
+    return path.slice(0, path.length - extname(path).length);
+};
 
 export const traverseAllFiles = (root: string) => {
     let files: string[] = [];

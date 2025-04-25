@@ -1,7 +1,7 @@
 import Reconciler, { OpaqueRoot } from "react-reconciler";
 import { SeaworkHostConfig } from "./HostConfig";
 import { Container } from "./types";
-import { ConcurrentRoot } from "react-reconciler/constants";
+import { ConcurrentRoot } from "react-reconciler/constants.js";
 import EventEmitter from "node:events";
 import TypedEmitter from "typed-emitter"
 import { createElement, Fragment } from "react";

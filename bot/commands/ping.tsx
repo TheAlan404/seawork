@@ -15,7 +15,22 @@ export default function PingCommand() {
     return (
         <message v2>
             <container>
-                <text>mrrow</text>
+                <text>MEOW</text>
+                <text>MEOW</text>
+                <text>MEOW</text>
+                <actionRow>
+                    <button
+                        customId="a"
+                    >
+                        mrow
+                    </button>
+                    <button
+                        customId="b"
+                        style="secondary"
+                    >
+                        mrrp
+                    </button>
+                </actionRow>
             </container>
         </message>
     )

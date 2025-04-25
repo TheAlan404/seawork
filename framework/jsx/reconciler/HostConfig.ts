@@ -1,5 +1,5 @@
 import { type HostConfig } from "react-reconciler";
-import { DefaultEventPriority } from "react-reconciler/constants";
+import { DefaultEventPriority } from "react-reconciler/constants.js";
 import { Container, InternalNode } from "./types";
 
 export type HostConfigProps = {
@@ -45,7 +45,7 @@ export const SeaworkHostConfig: HostConfig<
     clearContainer: (container) => container.node = null,
 
     // Instance Creation
-    createInstance: (type, props) => ({
+    createInstance: (type, { children, ...props }) => ({
         type,
         props,
         children: [],
