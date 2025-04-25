@@ -1,5 +1,16 @@
 import { readFileSync, readdirSync, existsSync } from "node:fs";
-import { join } from "node:path";
+import { extname, join, sep, basename } from "node:path";
+
+export const splitSegments = (path: string) => path.split(sep);
+
+export const isModuleFile = (path: string) => [
+    ".tsx",
+    ".jsx",
+    ".ts",
+    ".js",
+].includes(extname(path));
+
+export const noExtFilename = (path: string) => basename(path).slice(0, extname(path).length);
 
 export const traverseAllFiles = (root: string) => {
     let files: string[] = [];
@@ -14,8 +25,4 @@ export const traverseAllFiles = (root: string) => {
     return files;
 };
 
-export const importWithHotReload = async (specifier: string) => {
-    const mod = await import(specifier);
-    import.meta.hot?.accept(specifier);
-    return mod;
-};
+

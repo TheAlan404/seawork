@@ -6,4 +6,5 @@ export default defineConfig({
     },
     clientId: "1337398328937152592",
     guildIds: ["1197520507617153064"],
+    login: false,
 });

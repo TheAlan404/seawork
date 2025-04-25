@@ -1,9 +1,6 @@
-import { Command } from "./+types/ping"
 import { useEffect, useState } from "react";
 
-export const options = () => [
-    // string("mrow"),
-];
+export const options = () => [];
 
 export default function PingCommand() {
     const [state, setState] = useState(0);
