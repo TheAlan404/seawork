@@ -11,10 +11,6 @@
         "lib": [
             "ESNext"
         ],
-        "rootDirs": [
-            ".",
-            "./.seawork/types"
-        ],
         "paths": {},
         "baseUrl": ".",
         "esModuleInterop": true,
