@@ -156,7 +156,7 @@ export class PayloadTransformer {
 
     toDiscordSelectComponent(node: InstrinsicNodesMap["select"]): AllSelectComponents {
         const custom_id = node.props.customId || this.createCustomId();
-        
+
         return {
             type: {
                 string: 3,
@@ -173,18 +173,18 @@ export class PayloadTransformer {
             ...(node.props.type == "string" ? {
                 options: node.props.options.map(option => ({
                     ...option,
-                    default: (node.props.value as string[] | undefined)?.includes(option.value),
+                    default: (node.props.defaultValues as string[] | undefined)?.includes(option.value),
                 })),
             } : {}),
             ...(node.props.type == "user" || node.props.type == "role" ? {
-                default_values: node.props.value?.map(id => ({ id, type: node.props.type })) as any,
+                default_values: node.props.defaultValues?.map(id => ({ id, type: node.props.type })) as any,
             } : {}),
             ...(node.props.type == "mentionable" ? {
-                default_values: node.props.value as any,
+                default_values: node.props.defaultValues as any,
             } : {}),
             ...(node.props.type == "channel" ? {
                 channel_types: node.props.channelTypes,
-                default_values: node.props.value?.map(id => ({ id, type: "channel" })) as any,
+                default_values: node.props.defaultValues?.map(id => ({ id, type: "channel" })) as any,
             } : {}),
         };
     }

@@ -1,4 +1,4 @@
-import type { APISelectMenuOption, ChannelType, RoleSelectMenuInteraction, StringSelectMenuInteraction, UserSelectMenuInteraction } from "discord.js";
+import type { APISelectMenuOption, ChannelSelectMenuInteraction, ChannelType, MentionableSelectMenuInteraction, RoleSelectMenuInteraction, Snowflake, StringSelectMenuInteraction, UserSelectMenuInteraction } from "discord.js";
 import type { BaseInteractableProps } from "./base";
 
 export interface BaseSelectProps extends BaseInteractableProps {
@@ -11,33 +11,33 @@ export interface BaseSelectProps extends BaseInteractableProps {
 export interface StringSelectProps extends BaseSelectProps {
     type: "string";
     options: Omit<APISelectMenuOption, "default">[];
-    value?: string[];
-    onSelect?: (value: string[], interaction: StringSelectMenuInteraction) => void;
+    defaultValues?: Snowflake[];
+    onSelect?: (value: Snowflake[], interaction: StringSelectMenuInteraction) => void;
 }
 
 export interface UserSelectProps extends BaseSelectProps {
     type: "user";
-    value?: string[];
-    onSelect?: (value: string[], interaction: UserSelectMenuInteraction) => void;
+    defaultValues?: Snowflake[];
+    onSelect?: (value: Snowflake[], interaction: UserSelectMenuInteraction) => void;
 };
 
 export interface RoleSelectProps extends BaseSelectProps {
     type: "role";
-    value?: string[];
-    onSelect?: (value: string[], interaction: RoleSelectMenuInteraction) => void;
+    defaultValues?: Snowflake[];
+    onSelect?: (value: Snowflake[], interaction: RoleSelectMenuInteraction) => void;
 };
 
 export interface MentionableSelectProps extends BaseSelectProps {
     type: "mentionable";
-    value?: { id: string; type: "user" | "role" }[];
-    onSelect?: () => void;
+    defaultValues?: { id: Snowflake; type: "user" | "role" }[];
+    onSelect?: (value: Snowflake[], interaction: MentionableSelectMenuInteraction) => void;
 };
 
 export interface ChannelSelectProps extends BaseSelectProps {
     type: "channel";
     channelTypes?: ChannelType[];
-    value?: string[];
-    onSelect?: () => void;
+    defaultValues?: Snowflake[];
+    onSelect?: (value: Snowflake[], interaction: ChannelSelectMenuInteraction) => void;
 };
 
 export type SelectProps = StringSelectProps | UserSelectProps | RoleSelectProps | MentionableSelectProps | ChannelSelectProps;
