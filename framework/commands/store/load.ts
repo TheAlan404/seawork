@@ -1,9 +1,9 @@
 import { join } from "node:path";
 import { removeExt, splitSegments, traverseAllFiles } from "./utils";
-import { InternalCommand } from "./types";
+import { InternalCommand } from "../types";
 import { store } from "./store";
-import { hmrImport } from "./import";
-import { AnyCommandModule } from "framework/module/module";
+import { hmrImport } from "../../import";
+import { AnyCommandModule } from "../module/types";
 
 const CommandsPath = join("bot", "commands");
 

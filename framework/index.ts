@@ -2,8 +2,9 @@ import "dotenv/config";
 import config from "../seawork.config";
 import { client } from "./client";
 import { Events } from "discord.js";
-import { loadCommands } from "./store/load";
+import { loadCommands } from "./commands/store/load";
 import { handleInteraction } from "./handlers/interaction";
+import "./commands/publish/dev";
 
 console.log("Starting Sea Framework...");
 

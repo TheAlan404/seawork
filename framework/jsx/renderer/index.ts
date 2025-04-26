@@ -1,10 +1,10 @@
 import { ButtonInteraction, ChatInputCommandInteraction, Interaction, InteractionReplyOptions, InteractionResponseType, Routes } from "discord.js";
 import { InternalReactRenderer } from "../reconciler";
 import { PayloadOutput, PayloadTransformer } from "./transform";
-import { InternalCommand } from "../../store/types";
+import { InternalCommand } from "../../commands/types";
 import { createElement, Fragment } from "react";
 import { Container } from "../reconciler/types";
-import { store } from "../../store/store";
+import { store } from "../../commands/store/store";
 
 export class RendererInstance {
     renderer: InternalReactRenderer;

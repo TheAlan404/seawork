@@ -1,5 +1,5 @@
 import { ApplicationCommandType, Interaction } from "discord.js";
-import { store } from "../store/store";
+import { store } from "../commands/store/store";
 import { renderers } from "../jsx/renderer";
 
 export const handleInteraction = async (interaction: Interaction) => {

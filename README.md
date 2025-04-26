@@ -87,10 +87,16 @@ all components are supported (**except all event handlers, WIP**) im lazy to wri
 ## TODO
 
 - [x] Hot module reloading
+  - [x] handle file change
+  - [ ] handle file delete
+  - [ ] handle file create
 - [ ] Implement all event handlers (WIP)
+  - [x] button onClick 
+  - [ ] select onSubmit 
 - [ ] module `options`
 - [ ] module typegen
 - [ ] module `execute`
 - [ ] module `loader`
+- [ ] modals API
 - [ ] Auto-publish commands
 

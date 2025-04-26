@@ -1,5 +1,5 @@
 import EventEmitter from "node:events";
-import { InternalCommand, InternalStore } from "./types";
+import { InternalCommand, InternalStore } from "../types";
 import TypedEventEmitter from "typed-emitter";
 
 export type StoreEvents = {
