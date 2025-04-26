@@ -5,6 +5,7 @@ import { Events } from "discord.js";
 import { loadCommands } from "./commands/store/load";
 import { handleInteraction } from "./handlers/interaction";
 import "./commands/publish/dev";
+import "./commands/typegen/dev";
 
 console.log("Starting Sea Framework...");
 

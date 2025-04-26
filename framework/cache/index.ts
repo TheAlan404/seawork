@@ -5,7 +5,7 @@ import { CacheRoot, createCacheRoot } from "./types";
 export class DotCacheManager {
     rootPath = ".seawork";
     dataPath = join(this.rootPath, "cache.json");
-    typesPath = join(this.rootPath, "types.d.ts");
+    typesPath = join(this.rootPath, "types", "types.d.ts");
 
     data: CacheRoot;
     constructor() {
