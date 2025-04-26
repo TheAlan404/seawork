@@ -1,12 +1,11 @@
 import { store } from "../store/store";
 
 store.on("commandUpdate", () => {
-    devPublishCommands();
+    devTypeGen();
 });
 
-export const devPublishCommands = () => {
+export const devTypeGen = () => {
     // console.log("Hook ran");
-
 };
 
 import.meta.hot?.accept();

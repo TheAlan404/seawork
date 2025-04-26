@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 
 export const options = () => [];
 
-export default function PingCommand() {
+export default function CounterCommand() {
     const [count, setCount] = useState(0);
 
     return (

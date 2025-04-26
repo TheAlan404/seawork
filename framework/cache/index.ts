@@ -5,6 +5,7 @@ import { CacheRoot, createCacheRoot } from "./types";
 export class DotCacheManager {
     rootPath = ".seawork";
     dataPath = join(this.rootPath, "cache.json");
+    typesPath = join(this.rootPath, "types.d.ts");
 
     data: CacheRoot;
     constructor() {
@@ -20,6 +21,14 @@ export class DotCacheManager {
         } else {
             this.data = createCacheRoot();
         };
+    }
+
+    writeCache() {
+        writeFileSync(this.dataPath, JSON.stringify(this.data));
+    }
+
+    writeTypes(types: string) {
+        writeFileSync(this.typesPath, types);
     }
 };
 

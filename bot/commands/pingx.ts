@@ -1,6 +1,4 @@
-export const options = [];
-
-type A = {}
+export const options: Command.Options = [];
 
 export default function TypingsTest(o: any) {
 

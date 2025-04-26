@@ -8,6 +8,8 @@ import { AnyCommandModule } from "../module/types";
 const CommandsPath = join("bot", "commands");
 
 export const loadCommands = async () => {
+    store.commands.clear();
+
     console.log("Loading all commands");
 
     let allPaths = traverseAllFiles(CommandsPath);
@@ -19,7 +21,7 @@ export const loadCommands = async () => {
         let cmd: InternalCommand = {
             path,
         };
-
+        
         hmrImport(modulePath, (mod) => {
             loadCommandModule(cmd, mod);
             store.addCommand(cmd);
