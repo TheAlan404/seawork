@@ -1,5 +1,5 @@
-import { APISelectMenuOption, ChannelType, RoleSelectMenuInteraction, StringSelectMenuInteraction, UserSelectMenuInteraction } from "discord.js";
-import { BaseInteractableProps } from "./base";
+import type { APISelectMenuOption, ChannelType, RoleSelectMenuInteraction, StringSelectMenuInteraction, UserSelectMenuInteraction } from "discord.js";
+import type { BaseInteractableProps } from "./base";
 
 export interface BaseSelectProps extends BaseInteractableProps {
     min?: number;

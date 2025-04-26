@@ -1,9 +1,9 @@
-import Reconciler, { OpaqueRoot } from "react-reconciler";
+import Reconciler, { type OpaqueRoot } from "react-reconciler";
 import { InternalHostConfig } from "./HostConfig";
-import { Container } from "./types";
+import type { Container } from "./types";
 import { ConcurrentRoot } from "react-reconciler/constants.js";
 import EventEmitter from "node:events";
-import TypedEmitter from "typed-emitter"
+import type TypedEmitter from "typed-emitter"
 import { createElement, Fragment } from "react";
 
 export const reconciler = Reconciler(InternalHostConfig);

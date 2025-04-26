@@ -1,6 +1,6 @@
-import { type HostConfig } from "react-reconciler";
+import type { HostConfig } from "react-reconciler";
 import { DefaultEventPriority } from "react-reconciler/constants.js";
-import { Container, InternalNode } from "./types";
+import type { Container, InternalNode } from "./types";
 
 export type HostConfigProps = {
     Type: InternalNode["type"];

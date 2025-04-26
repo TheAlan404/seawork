@@ -1,9 +1,9 @@
 import { v4 } from "uuid";
-import { Container, InternalNode } from "../reconciler/types";
-import { APIChannelSelectComponent, APIMentionableSelectComponent, APIMessageComponent, APIRoleSelectComponent, APIUserSelectComponent, APIStringSelectComponent, ComponentType } from "discord-api-types/v10";
-import { APIMessage, BaseMessageOptions, ButtonInteraction, resolveColor } from "discord.js";
+import { Container, type InternalNode } from "../reconciler/types";
+import { type APIChannelSelectComponent, type APIMentionableSelectComponent, type APIMessageComponent, type APIRoleSelectComponent, type APIUserSelectComponent, type APIStringSelectComponent, ComponentType } from "discord-api-types/v10";
+import { APIMessage, type BaseMessageOptions, ButtonInteraction, resolveColor } from "discord.js";
 import { EventHandler } from "../intrinsics/elements";
-import { RendererEventContainer } from "./events";
+import type { RendererEventContainer } from "./events";
 
 export type InstrinsicNodesMap = {
     [K in keyof React.JSX.IntrinsicElements]: {

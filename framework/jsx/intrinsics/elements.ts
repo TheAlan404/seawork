@@ -1,9 +1,9 @@
-import { APIStringSelectComponent, APIMediaGalleryItem, ChannelType, APISelectMenuOption } from "discord-api-types/v10";
-import { ButtonInteraction, ColorResolvable, StringSelectMenuInteraction, UserSelectMenuInteraction } from "discord.js";
-import { PropsWithChildren } from "react";
-import { UnfurledMediaResolvable } from "./base";
-import { SelectProps } from "./select";
-import { ButtonProps } from "./button";
+import type { APIStringSelectComponent, APIMediaGalleryItem, ChannelType, APISelectMenuOption } from "discord-api-types/v10";
+import type { ButtonInteraction, ColorResolvable, StringSelectMenuInteraction, UserSelectMenuInteraction } from "discord.js";
+import type { PropsWithChildren } from "react";
+import type { UnfurledMediaResolvable } from "./base";
+import type { SelectProps } from "./select";
+import type { ButtonProps } from "./button";
 
 export type EventHandler<T> = (event: T) => any;
 

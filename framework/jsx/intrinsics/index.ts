@@ -1,4 +1,4 @@
-import { SeaworkElements } from "./elements";
+import type { SeaworkElements } from "./elements";
 
 declare global {
     namespace React {
