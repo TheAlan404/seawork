@@ -8,20 +8,20 @@ import { ButtonProps } from "./button";
 export type EventHandler<T> = (event: T) => any;
 
 export interface SeaworkElements {
-    message: {
+    message: PropsWithChildren<{
         v2?: boolean;
         ephemeral?: boolean;
-    } & PropsWithChildren;
+    }>;
 
-    container: {
+    container: PropsWithChildren<{
         color?: ColorResolvable;
         spoiler?: boolean;
-    } & PropsWithChildren;
-    actionRow: {} & PropsWithChildren;
-    section: {} & PropsWithChildren;
-    accessory: {} & PropsWithChildren;
+    }>;
+    actionRow: PropsWithChildren;
+    section: PropsWithChildren;
+    accessory: PropsWithChildren;
 
-    text: {} & PropsWithChildren;
+    text: PropsWithChildren;
     thumbnail: {
         description?: string;
         spoiler?: boolean;
@@ -42,7 +42,7 @@ export interface SeaworkElements {
         spacing?: "sm" | "lg";
     };
 
-    button: ButtonProps & PropsWithChildren;
+    button: ButtonProps;
     select: SelectProps;
 
     textInput: {
