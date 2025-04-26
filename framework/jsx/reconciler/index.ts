@@ -48,4 +48,14 @@ export class InternalReactRenderer extends (EventEmitter as new () => TypedEmitt
         // ?
         this.setRenderedNode(createElement(Fragment));
     }
+
+    static renderOnce(node: React.ReactNode) {
+        return new Promise((res) => {
+            let renderer = new InternalReactRenderer();
+            renderer.on("render", (continer) => {
+                res(continer.node);
+            });
+            renderer.setRenderedNode(node);
+        });
+    }
 };

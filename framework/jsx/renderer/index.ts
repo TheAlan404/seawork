@@ -1,19 +1,25 @@
-import { ChatInputCommandInteraction, Interaction, InteractionResponseType, Routes } from "discord.js";
+import { ButtonInteraction, ChatInputCommandInteraction, Interaction, InteractionReplyOptions, InteractionResponseType, Routes } from "discord.js";
 import { InternalReactRenderer } from "../reconciler";
-import { transformContainerToMessagePayload } from "./transform";
+import { PayloadOutput, PayloadTransformer } from "./transform";
 import { InternalCommand } from "../../store/types";
-import { createElement } from "react";
+import { createElement, Fragment } from "react";
 import { Container } from "../reconciler/types";
+import { store } from "../../store/store";
 
 export class RendererInstance {
     renderer: InternalReactRenderer;
-    interaction: Interaction;
+    interaction: ChatInputCommandInteraction;
     command: InternalCommand;
+    transformer: PayloadTransformer;
 
-    constructor(interaction: Interaction, command: InternalCommand) {
+    initialReplied: boolean = false;
+
+    constructor(interaction: ChatInputCommandInteraction, command: InternalCommand) {
         this.renderer = new InternalReactRenderer();
         this.interaction = interaction;
         this.command = command;
+
+        this.transformer = new PayloadTransformer();
 
         this.renderer.on("render", (container) => {
             this.render(container);
@@ -24,12 +30,18 @@ export class RendererInstance {
         this.renderer.on("containerUpdated", () => console.log("[renderer] Container updated"));
     }
 
-    setNode(node: React.ReactNode) {
+    setNode() {
+        let node = createElement(this.command.component ?? Fragment);
         this.renderer.setRenderedNode(node);
     }
 
+    async initialRun() {
+        // await this.interaction.deferReply({ flags: ["Ephemeral"] });
+    }
+
     async render(container: Container) {
-        let payload = transformContainerToMessagePayload(container);
+        this.transformer.clearEventHandlers();
+        let payload = this.transformer.toMessagePayload(container.node);
         if(!payload) return console.log("Failed to compute message payload");
         
         try {
@@ -41,21 +53,41 @@ export class RendererInstance {
         }
     }
 
-    async editReply(body: any) {
-        return await this.interaction.client.rest.patch(Routes.webhookMessage(this.interaction.client.application.id, this.interaction.token), {
-            body,
-            query: new URLSearchParams([
-                ["with_components", "true"]
-            ]),
-        });
+    async editReply(payload: PayloadOutput) {
+        try {
+            const { v2, ephemeral, ...body } = payload;
+
+            if(!this.initialReplied) {
+                let flags: ("Ephemeral" | "IsComponentsV2")[] = [];
+
+                if(v2) flags.push("IsComponentsV2");
+                if(ephemeral) flags.push("Ephemeral");
+
+                await this.interaction.reply({
+                    withResponse: true,
+                    flags,
+                    ...body,
+                });
+
+                this.initialReplied = true;
+            } else {
+                await this.interaction.editReply({
+                    withComponents: true,
+                    ...body,
+                });
+            }
+        } catch(e) {
+            await this.handleError(e as Error);
+        }
     }
 
     async handleError(error: Error) {
-        const content = `:warning: **Error**\n\`\`\`\n${error.toString()}\n\`\`\``;
-
         try {
+            const content = `:warning: **Error**\n\`\`\`\n${error.toString()}\n\`\`\``;
+            
             await this.editReply({
-                flags: 1 << 15,
+                v2: true,
+                ephemeral: true,
                 components: [
                     {
                         type: 10,
@@ -64,32 +96,45 @@ export class RendererInstance {
                 ],
             });
         } catch(e) {
-            console.log("report error error", e)
+            console.log("=== UNRENDERABLE ERROR ===")
+            console.log("--- ORIGINAL ---")
+            console.log(error);
+            console.log("--- REPORT ERROR ---")
+            console.log(e);
         }
     }
 }
 
-
-
 export class RenderersManager {
     instances: Set<RendererInstance> = new Set();
 
-    create(command: InternalCommand, interaction: Interaction, node: React.ReactNode) {
+    constructor() {
+        store.on("commandUpdate", (cmd) => {
+            for(let inst of this.instances) {
+                if(inst.command.path.join(" ") !== cmd.path.join(" ")) continue;
+                inst.command = cmd;
+                if(!inst.command.component) continue;
+                inst.setNode();
+            }
+        });
+    }
+
+    create(command: InternalCommand, interaction: ChatInputCommandInteraction) {
         const renderer = new RendererInstance(interaction, command);
-        renderer.setNode(node);
+        renderer.setNode();
+        renderer.initialRun();
         this.instances.add(renderer);
     }
 
-    updateCommand(newCommand: InternalCommand) {
+    dispatchButtonClick(int: ButtonInteraction) {
         for(let inst of this.instances) {
-            if(inst.command.id !== newCommand.id) continue;
-            
-            inst.command = newCommand;
-
-            if(!inst.command.component) continue;
-            inst.setNode(createElement(inst.command.component));
+            let cb = inst.transformer.buttonClickEventHandlers.get(int.customId);
+            if(!cb) continue;
+            cb(int);
         }
     }
 }
 
 export const renderers = new RenderersManager();
+
+import.meta.hot?.accept();

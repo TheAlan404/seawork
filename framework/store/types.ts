@@ -3,8 +3,6 @@ export type InternalStore = {
 };
 
 export type InternalCommand = {
-    name: string;
-    children?: Map<string, InternalCommand>;
+    path: string[];
     component?: React.ComponentType<any>;
-    id?: string;
 };

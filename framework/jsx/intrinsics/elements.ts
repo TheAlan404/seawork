@@ -1,4 +1,5 @@
 import { APIStringSelectComponent, APIMediaGalleryItem, ChannelType } from "discord-api-types/v10";
+import { ButtonInteraction, ColorResolvable } from "discord.js";
 import { PropsWithChildren } from "react";
 
 export interface BaseInteractableProps {
@@ -14,13 +15,16 @@ export interface BaseSelectProps extends BaseInteractableProps {
 
 export type UnfurledMediaResolvable = string;
 
+export type EventHandler<T> = (event: T) => any;
+
 export interface SeaworkElements {
     message: {
         v2?: boolean;
+        ephemeral?: boolean;
     } & PropsWithChildren;
 
     container: {
-        color?: string;
+        color?: ColorResolvable;
         spoiler?: boolean;
     } & PropsWithChildren;
     actionRow: {} & PropsWithChildren;
@@ -54,7 +58,7 @@ export interface SeaworkElements {
         skuId?: string;
         disabled?: boolean;
         // emoji
-        onClick?: () => void;
+        onClick?: EventHandler<ButtonInteraction>;
     } & PropsWithChildren;
 
     textInput: {
@@ -66,7 +70,7 @@ export interface SeaworkElements {
         min?: number;
         max?: number;
         value?: string;
-        onSubmit?: () => void;
+        // onSubmit?: EventHandler<{}>;
     };
 
     select: BaseSelectProps & ({
