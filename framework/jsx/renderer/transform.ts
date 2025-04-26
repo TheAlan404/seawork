@@ -156,6 +156,7 @@ export class PayloadTransformer {
 
     toDiscordSelectComponent(node: InstrinsicNodesMap["select"]): AllSelectComponents {
         const custom_id = node.props.customId || this.createCustomId();
+        this.events.registerSelectOnSelect(custom_id, (node.props as any).onSelect);
 
         return {
             type: {
