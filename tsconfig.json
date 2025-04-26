@@ -3,6 +3,9 @@
         "**/*",
         ".seawork/types/**/*"
     ],
+    "exclude": [
+        "node_modules"
+    ],
     "compilerOptions": {
         "target": "ESNext",
         "module": "ESNext",
