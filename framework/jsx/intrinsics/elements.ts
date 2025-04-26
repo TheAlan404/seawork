@@ -42,7 +42,7 @@ export interface SeaworkElements {
         spacing?: "sm" | "lg";
     };
 
-    button: ButtonProps;
+    button: PropsWithChildren<ButtonProps>;
     select: SelectProps;
 
     textInput: {
