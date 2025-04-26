@@ -138,8 +138,10 @@ export class PayloadTransformer {
             "url" in node.props ? 5 : (["primary", "secondary", "success", "danger"].indexOf(node.props.style || "primary") + 1)
         );
 
-        const custom_id = node.props.customId || this.createCustomId();
-        this.events.registerButtonOnClick(custom_id, (node.props as any).onClick);
+        const custom_id = !("skuId" in node.props || "url" in node.props) ? (node.props.customId || this.createCustomId()) : undefined;
+        if (custom_id) {
+            this.events.registerButtonOnClick(custom_id, (node.props as any).onClick);
+        }
 
         return {
             type: 2,
