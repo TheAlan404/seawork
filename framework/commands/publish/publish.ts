@@ -1,6 +1,6 @@
 import { client } from "#core/client.ts";
 import { RESTPostAPIChatInputApplicationCommandsJSONBody, Routes } from "discord.js";
-import config from "../../../seawork.config";
+import config from "../../../config";
 
 export const publishCommands = async (
     body: RESTPostAPIChatInputApplicationCommandsJSONBody[],

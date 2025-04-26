@@ -19,7 +19,10 @@ export const handleInteraction = async (interaction: Interaction) => {
         renderers.create(cmd, interaction);
     } else if(interaction.isButton()) {
         await interaction.deferUpdate();
-        renderers.dispatchButtonClick(interaction);
+        renderers.dispatchInteraction(interaction);
+    } else if(interaction.isAnySelectMenu()) {
+        await interaction.deferUpdate();
+        renderers.dispatchInteraction(interaction);
     }
 };
 

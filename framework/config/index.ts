@@ -5,7 +5,7 @@ export type SeaworkConfig = {
     clientId: string;
     
     /// For testing
-    guildIds?: string[];
+    guildId?: string;
     login?: boolean;
 };
 

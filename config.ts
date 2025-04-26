@@ -5,6 +5,6 @@ export default defineConfig({
         intents: ["Guilds"],
     },
     clientId: "1337398328937152592",
-    guildIds: ["1197520507617153064"],
+    guildId: "1197520507617153064",
     // login: false,
 });

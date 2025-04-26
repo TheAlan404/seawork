@@ -4,6 +4,7 @@ import TypedEventEmitter from "typed-emitter";
 
 export type StoreEvents = {
     commandUpdate: (cmd: InternalCommand) => void;
+    commandAdd: (cmd: InternalCommand) => void;
 };
 
 export class Store extends (EventEmitter as new () => TypedEventEmitter<StoreEvents>) {
@@ -18,8 +19,14 @@ export class Store extends (EventEmitter as new () => TypedEventEmitter<StoreEve
     }
 
     addCommand(cmd: InternalCommand) {
-        this.commands.set(cmd.path.join(" "), cmd);
-        this.emit("commandUpdate", cmd);
+        const key = cmd.path.join(" ");
+        const existed = this.commands.has(key);
+        this.commands.set(key, cmd);
+        if(existed) {
+            this.emit("commandUpdate", cmd)
+        } else {
+            this.emit("commandAdd", cmd)
+        };
     }
 };
 

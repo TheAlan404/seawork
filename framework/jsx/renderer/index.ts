@@ -1,16 +1,18 @@
-import { ButtonInteraction, ChatInputCommandInteraction, Interaction, InteractionReplyOptions, InteractionResponseType, Routes } from "discord.js";
+import { AnySelectMenuInteraction, ButtonInteraction, ChatInputCommandInteraction, Interaction, InteractionReplyOptions, InteractionResponseType, Routes } from "discord.js";
 import { InternalReactRenderer } from "../reconciler";
 import { PayloadOutput, PayloadTransformer } from "./transform";
 import { InternalCommand } from "../../commands/types";
 import { createElement, Fragment } from "react";
 import { Container } from "../reconciler/types";
 import { store } from "../../commands/store/store";
+import { RendererEventContainer } from "./events";
 
 export class RendererInstance {
     renderer: InternalReactRenderer;
     interaction: ChatInputCommandInteraction;
     command: InternalCommand;
     transformer: PayloadTransformer;
+    events: RendererEventContainer;
 
     initialReplied: boolean = false;
 
@@ -18,8 +20,8 @@ export class RendererInstance {
         this.renderer = new InternalReactRenderer();
         this.interaction = interaction;
         this.command = command;
-
-        this.transformer = new PayloadTransformer();
+        this.events = new RendererEventContainer();
+        this.transformer = new PayloadTransformer(this.events);
 
         this.renderer.on("render", (container) => {
             this.render(container);
@@ -40,7 +42,7 @@ export class RendererInstance {
     }
 
     async render(container: Container) {
-        this.transformer.clearEventHandlers();
+        this.events.clear();
         let payload = this.transformer.toMessagePayload(container.node);
         if(!payload) return console.log("Failed to compute message payload");
         
@@ -126,11 +128,9 @@ export class RenderersManager {
         this.instances.add(renderer);
     }
 
-    dispatchButtonClick(int: ButtonInteraction) {
+    dispatchInteraction(int: Interaction) {
         for(let inst of this.instances) {
-            let cb = inst.transformer.buttonClickEventHandlers.get(int.customId);
-            if(!cb) continue;
-            cb(int);
+            inst.events.dispatch(int);
         }
     }
 }

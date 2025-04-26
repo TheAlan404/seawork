@@ -1,5 +1,5 @@
 import { Client } from "discord.js";
-import config from "../seawork.config";
+import config from "../config";
 import { Hot } from "dynohot";
 
 const hot: Hot<{ client?: Client }> | undefined = import.meta.hot;

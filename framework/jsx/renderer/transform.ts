@@ -3,6 +3,7 @@ import { Container, InternalNode } from "../reconciler/types";
 import { APIChannelSelectComponent, APIMentionableSelectComponent, APIMessageComponent, APIRoleSelectComponent, APIUserSelectComponent, APIStringSelectComponent, ComponentType } from "discord-api-types/v10";
 import { APIMessage, BaseMessageOptions, ButtonInteraction, resolveColor } from "discord.js";
 import { EventHandler } from "../intrinsics/elements";
+import { RendererEventContainer } from "./events";
 
 export type InstrinsicNodesMap = {
     [K in keyof React.JSX.IntrinsicElements]: {
@@ -22,14 +23,10 @@ export type PayloadOutput = BaseMessageOptions & {
 };
 
 export class PayloadTransformer {
-    buttonClickEventHandlers: Map<string, EventHandler<ButtonInteraction>> = new Map();
+    events: RendererEventContainer;
 
-    constructor() {
-
-    }
-
-    clearEventHandlers() {
-        this.buttonClickEventHandlers.clear();
+    constructor(events: RendererEventContainer) {
+        this.events = events;
     }
 
     createCustomId() {
@@ -136,20 +133,20 @@ export class PayloadTransformer {
     }
 
     toDiscordButtonComponent(node: InstrinsicNodesMap["button"]) {
-        let style = node.props.skuId ? 6 : (
-            node.props.url ? 5 : (["primary", "secondary", "success", "danger"].indexOf(node.props.style || "primary") + 1)
+        let style = "skuId" in node.props ? 6 : (
+            "url" in node.props ? 5 : (["primary", "secondary", "success", "danger"].indexOf(node.props.style || "primary") + 1)
         );
 
         const custom_id = node.props.customId || this.createCustomId();
-        if(node.props.onClick) this.buttonClickEventHandlers.set(custom_id, node.props.onClick);
+        this.events.registerButtonOnClick(custom_id, (node.props as any).onClick);
 
         return {
             type: 2,
             style,
             label: this.toText(node),
             custom_id,
-            sku_id: node.props.skuId,
-            url: node.props.url,
+            sku_id: (node.props as any).skuId,
+            url: (node.props as any).url,
             disabled: node.props.disabled,
         };
     }
@@ -171,7 +168,10 @@ export class PayloadTransformer {
             disabled: node.props.disabled,
             placeholder: node.props.placeholder,
             ...(node.props.type == "string" ? {
-                options: node.props.options as any,
+                options: node.props.options.map(option => ({
+                    ...option,
+                    default: (node.props.value as string[] | undefined)?.includes(option.value),
+                })),
             } : {}),
             ...(node.props.type == "user" || node.props.type == "role" ? {
                 default_values: node.props.value?.map(id => ({ id, type: node.props.type })) as any,

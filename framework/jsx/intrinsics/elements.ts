@@ -1,19 +1,9 @@
-import { APIStringSelectComponent, APIMediaGalleryItem, ChannelType } from "discord-api-types/v10";
-import { ButtonInteraction, ColorResolvable } from "discord.js";
+import { APIStringSelectComponent, APIMediaGalleryItem, ChannelType, APISelectMenuOption } from "discord-api-types/v10";
+import { ButtonInteraction, ColorResolvable, StringSelectMenuInteraction, UserSelectMenuInteraction } from "discord.js";
 import { PropsWithChildren } from "react";
-
-export interface BaseInteractableProps {
-    customId?: string;
-};
-
-export interface BaseSelectProps extends BaseInteractableProps {
-    min?: number;
-    max?: number;
-    disabled?: boolean;
-    placeholder?: string;
-};
-
-export type UnfurledMediaResolvable = string;
+import { UnfurledMediaResolvable } from "./base";
+import { SelectProps } from "./select";
+import { ButtonProps } from "./button";
 
 export type EventHandler<T> = (event: T) => any;
 
@@ -52,14 +42,8 @@ export interface SeaworkElements {
         spacing?: "sm" | "lg";
     };
 
-    button: BaseInteractableProps & {
-        style?: "primary" | "secondary" | "success" | "danger";
-        url?: string;
-        skuId?: string;
-        disabled?: boolean;
-        // emoji
-        onClick?: EventHandler<ButtonInteraction>;
-    } & PropsWithChildren;
+    button: ButtonProps & PropsWithChildren;
+    select: SelectProps;
 
     textInput: {
         label: string;
@@ -72,24 +56,4 @@ export interface SeaworkElements {
         value?: string;
         // onSubmit?: EventHandler<{}>;
     };
-
-    select: BaseSelectProps & ({
-        type: "string";
-        options: APIStringSelectComponent["options"];
-        value?: boolean;
-        onSelect?: () => void;
-    } | {
-        type: "user" | "role";
-        value?: string[];
-        onSelect?: () => void;
-    } | {
-        type: "mentionable";
-        value?: { id: string; type: "user" | "role" }[];
-        onSelect?: () => void;
-    } | {
-        type: "channel";
-        channelTypes?: ChannelType[];
-        value?: string[];
-        onSelect?: () => void;
-    });
 };

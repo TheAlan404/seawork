@@ -1,5 +1,5 @@
 import "dotenv/config";
-import config from "../seawork.config";
+import config from "../config";
 import { client } from "./client";
 import { Events } from "discord.js";
 import { loadCommands } from "./commands/store/load";
