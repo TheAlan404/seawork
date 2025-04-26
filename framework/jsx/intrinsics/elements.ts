@@ -37,7 +37,7 @@ export interface SeaworkElements {
         spoiler?: boolean;
     };
 
-    seperator: {
+    separator: {
         divider?: boolean;
         spacing?: "sm" | "lg";
     };

@@ -115,7 +115,7 @@ export class PayloadTransformer {
                     file: { url: node.props.file },
                     spoiler: node.props.spoiler,
                 }
-            case "seperator":
+            case "separator":
                 return {
                     type: 14,
                     divider: node.props.divider,
