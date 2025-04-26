@@ -14,6 +14,8 @@ export const loadCommands = async () => {
 
     let allPaths = traverseAllFiles(CommandsPath);
 
+    let promises: Promise<void>[] = [];
+
     for (let modulePath of allPaths) {
         let path = splitSegments(removeExt(modulePath)).slice(2);
         let id = path.join(" ");
@@ -22,12 +24,14 @@ export const loadCommands = async () => {
             path,
         };
         
-        hmrImport(modulePath, (mod) => {
+        promises.push(hmrImport(modulePath, (mod) => {
             loadCommandModule(cmd, mod);
             store.addCommand(cmd);
             console.log("Command loaded: " + id);
-        });
+        }));
     }
+
+    return await Promise.all(promises);
 };
 
 export const loadCommandModule = (

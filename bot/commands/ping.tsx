@@ -5,8 +5,16 @@ export default function TabsExampleCommand() {
         <message v2 ephemeral>
             <container>
                 <Tabs initialTab="a">
+                    <Tabs.Buttons
+                        data={["a", "b", "c"]}
+                    />
+
                     <Tabs.Tab value="a">
-                        <text>a</text>
+                        <text>
+                            # Tab A
+
+                            very cool tab btw
+                        </text>
                     </Tabs.Tab>
                     <Tabs.Tab value="b">
                         <text>b</text>
@@ -14,10 +22,6 @@ export default function TabsExampleCommand() {
                     <Tabs.Tab value="c">
                         <text>c</text>
                     </Tabs.Tab>
-
-                    <Tabs.Buttons
-                        data={["a", "b", "c"]}
-                    />
                 </Tabs>
             </container>
         </message>

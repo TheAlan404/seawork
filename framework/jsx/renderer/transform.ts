@@ -51,6 +51,7 @@ export class PayloadTransformer {
     }
 
     toText(node: InternalNode): string {
+        console.log("toText call", node)
         if (node.type == "#text") return node.props.text as string;
         return node.children.map(this.toText.bind(this)).join("");
     }

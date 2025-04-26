@@ -11,7 +11,7 @@ export const createCommandsJSON = () => {
         let data: RESTPostAPIChatInputApplicationCommandsJSONBody = {
             type: ApplicationCommandType.ChatInput,
             name: command.path[command.path.length - 1],
-            description: "",
+            description: command.path[command.path.length - 1],
             options: [],
         };
 

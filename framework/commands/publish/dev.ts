@@ -27,7 +27,7 @@ export const devPublishCommands = async () => {
         };
         cache.writeCache();
 
-        await publishCommands(current, config.guildId);
+        // await publishCommands(client.rest, current, config.guildId);
         console.log("[publish] Commands published!");
     } catch(e) {
         console.log("[publish] Publishing error", e);

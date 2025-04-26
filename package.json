@@ -2,7 +2,8 @@
     "name": "@seawork/bot",
     "type": "module",
     "scripts": {
-        "dev": "node --enable-source-maps --import @loaderkit/ts --import dynohot ./framework/index.ts"
+        "dev": "node --enable-source-maps --import @loaderkit/ts --import dynohot ./framework/index.ts",
+        "deploy": "node --enable-source-maps --import @loaderkit/ts --import dynohot ./framework/commands/publish/script.ts"
     },
     "imports": {
         "#core/*": {
