@@ -15,7 +15,9 @@ export const typegenCommand = (cmd: InternalCommand) => {
             `namespace Command {`,
             indented([
                 `type Options = T.InternalCommandOption[];`,
-                `type ComponentProps = T.BaseComponentProps & {`,
+                `type Execute = T.AnyCommandModule["execute"];`,
+                `type Details = T.AnyCommandModule["details"];`,
+                `type ComponentProps = T.BaseCommandContext & {`,
                 indented([
                     `options: {`,
                     indented(cmd.options?.map(opt => (

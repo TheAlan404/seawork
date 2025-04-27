@@ -1,11 +1,11 @@
-import { InternalCommand } from "../types";
-import { AnyCommandModule } from "./types";
+import { AnyCommandModule, InternalCommand } from "../types";
 
 export const loadCommandModule = (
     cmd: InternalCommand,
     mod: AnyCommandModule,
 ) => {
-    if (typeof mod.default == "function") cmd.component = mod.default;
-    if(Array.isArray(mod.options)) cmd.options = mod.options;
-    cmd.details = mod.details;
+    if("options" in mod && !Array.isArray(mod.options))
+        console.log("[error] 'export options' is not an array!");
+
+    Object.assign(cmd, mod);
 };

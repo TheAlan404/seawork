@@ -35,7 +35,7 @@ export class RendererInstance {
 
     setNode() {
         let node = createElement(
-            this.command.component ?? Fragment,
+            this.command.default! ?? Fragment,
             this.getProps(),
         );
         this.renderer.setRenderedNode(node);
@@ -55,6 +55,7 @@ export class RendererInstance {
 
         return {
             client: this.interaction.client,
+            interaction: this.interaction,
             options,
         };
     }
@@ -140,7 +141,7 @@ export class RenderersManager {
             for(let inst of this.instances) {
                 if(inst.command.path.join(" ") !== cmd.path.join(" ")) continue;
                 inst.command = cmd;
-                if(!inst.command.component) continue;
+                if(!inst.command.default) continue;
                 inst.setNode();
             }
         });

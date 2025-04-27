@@ -1,6 +1,7 @@
 import { ApplicationCommandType, Interaction } from "discord.js";
 import { store } from "../commands/store/store";
 import { renderers } from "../jsx/renderer";
+import { runInteractionCommand } from "#core/commands/execute/run.ts";
 
 export const handleInteraction = async (interaction: Interaction) => {
     if(interaction.isChatInputCommand()) {
@@ -13,10 +14,8 @@ export const handleInteraction = async (interaction: Interaction) => {
         let cmd = store.getCommand(commandPath);
 
         if(!cmd) return console.log("Command not found in store", interaction.commandName);
-        if(!cmd.component) return console.log("Command does not have a component", interaction.commandName);
 
-        console.log("Rendering " + cmd.path.join(" "));
-        renderers.create(cmd, interaction);
+        runInteractionCommand(interaction, cmd);
     } else if(interaction.isButton()) {
         await interaction.deferUpdate();
         renderers.dispatchInteraction(interaction);
