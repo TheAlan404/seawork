@@ -44,7 +44,7 @@ export class RendererInstance {
     async render(container: Container) {
         this.events.clear();
         let payload = this.transformer.toMessagePayload(container.node);
-        if(!payload) return console.log("Failed to compute message payload");
+        if('error' in payload) return console.log(`Failed to compute message payload: ${payload.error}`);
         
         try {
             await this.editReply(payload);

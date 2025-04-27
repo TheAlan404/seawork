@@ -33,9 +33,9 @@ export class PayloadTransformer {
         return `auto:${v4()}`;
     }
 
-    toMessagePayload(root: InternalNode | null) {
-        if (!root) return console.log("Container empty");
-        if (root.type !== "message") return console.log("Root is not a <message> component");
+    toMessagePayload(root: InternalNode | null): PayloadOutput | { error: string; } {
+        if (!root) return { error: "Container empty" };
+        if (root.type !== "message") return { error: "Root is not a <message> component" };
 
         let components = this.toDiscordComponentsArray(root.children);
 
