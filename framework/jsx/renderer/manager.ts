@@ -1,18 +1,12 @@
 import { ChatInputCommandInteraction, Interaction } from "discord.js";
 import { RendererInstance } from ".";
 import { ReactNode } from "react";
-import { InternalCommand } from "#core/commands/types.ts";
-import { store } from "#core/commands/store/store.ts";
 
 export class RenderersManager {
     instances: Set<RendererInstance> = new Set();
 
     constructor() {
-        store.on("commandUpdate", (cmd) => {
-            for(let inst of this.instances) {
-                inst.mount(); // mmm
-            }
-        });
+        
     }
 
     create(
