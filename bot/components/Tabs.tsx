@@ -7,7 +7,7 @@ export type TabsCtx = {
 
 export const TabContext = createContext<TabsCtx>({
     tab: "",
-    setTab: () => {},
+    setTab: () => { },
 });
 
 export const Tabs = ({
@@ -26,7 +26,7 @@ export const Tabs = ({
     )
 };
 
-Tabs.Tab = ({
+Tabs.Panel = ({
     children,
     value,
 }: {
@@ -34,7 +34,7 @@ Tabs.Tab = ({
 } & PropsWithChildren) => {
     const { tab } = useContext(TabContext);
 
-    if(tab !== value) return null;
+    if (tab !== value) return null;
     return children;
 };
 
@@ -54,6 +54,7 @@ Tabs.Buttons = ({
 
                 return (
                     <button
+                        // key={value} ??? TODO investigate
                         onClick={() => setTab(value)}
                         style={isActive ? "primary" : "secondary"}
                     >
@@ -61,6 +62,35 @@ Tabs.Buttons = ({
                     </button>
                 );
             })}
+        </actionRow>
+    );
+};
+
+Tabs.Select = ({
+    data,
+}: {
+    data: (string | { value: string; label?: string; description?: string })[];
+}) => {
+    const { tab: currentTab, setTab } = useContext(TabContext);
+
+    return (
+        <actionRow>
+            <select
+                type="string"
+                defaultValues={[currentTab]}
+                onSelect={([changeTo]) => setTab(changeTo)}
+                options={data.map((tab) => {
+                    const value = typeof tab == "string" ? tab : tab.value;
+                    const label = typeof tab == "string" ? tab : (tab.label || tab.value);
+                    const description = typeof tab == "string" ? undefined : tab.description;
+
+                    return {
+                        value,
+                        label,
+                        description,
+                    };
+                })}
+            />
         </actionRow>
     );
 };

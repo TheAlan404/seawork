@@ -12,32 +12,36 @@ export const options = [
 
 export default function TabsExampleCommand({
     options: {
-        type,
-    },
+        type = "select",
+    } = { type: "select" },
 }: Command.ComponentProps) {
     return (
         <message v2 ephemeral>
             <container>
                 <Tabs initialTab="a">
-                    {type}
-                    
-                    <Tabs.Buttons
-                        data={["a", "b", "c"]}
-                    />
+                    {type == "buttons" ? (
+                        <Tabs.Buttons
+                            data={["a", "b", "c"]}
+                        />
+                    ) : (
+                        <Tabs.Select
+                            data={["a", "b", "c"]}
+                        />
+                    )}
 
-                    <Tabs.Tab value="a">
+                    <Tabs.Panel value="a">
                         <text>
                             # Tab A
                             {"\n\n"}
                             very cool tab btw
                         </text>
-                    </Tabs.Tab>
-                    <Tabs.Tab value="b">
+                    </Tabs.Panel>
+                    <Tabs.Panel value="b">
                         <text>b</text>
-                    </Tabs.Tab>
-                    <Tabs.Tab value="c">
+                    </Tabs.Panel>
+                    <Tabs.Panel value="c">
                         <text>c</text>
-                    </Tabs.Tab>
+                    </Tabs.Panel>
                 </Tabs>
             </container>
         </message>
