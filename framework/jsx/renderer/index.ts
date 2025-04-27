@@ -1,28 +1,31 @@
 import { ApplicationCommandOptionType, type AnySelectMenuInteraction, type ButtonInteraction, type ChatInputCommandInteraction, type Interaction, type InteractionReplyOptions, type InteractionResponseType, type Routes } from "discord.js";
 import { InternalReactRenderer } from "../reconciler";
 import { type PayloadOutput, PayloadTransformer } from "./transform";
-import type { InternalCommand } from "../../commands/types";
-import { createElement, Fragment } from "react";
 import type { Container } from "../reconciler/types";
-import { store } from "../../commands/store/store";
 import { RendererEventContainer } from "./events";
 import { debounceAsync } from "#core/utils/debounceAsync.ts";
 
 export class RendererInstance {
+    id: string;
     renderer: InternalReactRenderer;
     interaction: ChatInputCommandInteraction;
-    command: InternalCommand;
     transformer: PayloadTransformer;
     events: RendererEventContainer;
 
+    lastInteraction: ButtonInteraction | AnySelectMenuInteraction | null = null;
     initialReplied: boolean = false;
 
-    constructor(interaction: ChatInputCommandInteraction, command: InternalCommand) {
+    constructor(
+        id: string,
+        interaction: ChatInputCommandInteraction,
+        node?: React.ReactNode,
+    ) {
+        this.id = id;
         this.renderer = new InternalReactRenderer();
         this.interaction = interaction;
-        this.command = command;
         this.events = new RendererEventContainer();
         this.transformer = new PayloadTransformer(this.events);
+        this.node = node;
 
         this.renderer.on("render", (container) => {
             this.render(container);
@@ -33,35 +36,10 @@ export class RendererInstance {
         this.renderer.on("containerUpdated", () => console.log("[renderer] Container updated"));
     }
 
-    setNode() {
-        let node = createElement(
-            this.command.default! ?? Fragment,
-            this.getProps(),
-        );
-        this.renderer.setRenderedNode(node);
-    }
+    node: React.ReactNode | null = null;
 
-    getProps() {
-        const options: Record<string, any> = {};
-
-        for(let option of this.interaction.options.data) {
-            options[option.name] = option.value
-                || option.user
-                || option.role
-                || option.channel
-                || option.attachment
-                || option.member;
-        };
-
-        return {
-            client: this.interaction.client,
-            interaction: this.interaction,
-            options,
-        };
-    }
-
-    async initialRun() {
-        // await this.interaction.deferReply({ flags: ["Ephemeral"] });
+    mount() {
+        this.renderer.setRenderedNode(this.node);
     }
 
     async render(container: Container) {
@@ -132,35 +110,3 @@ export class RendererInstance {
         }
     }
 }
-
-export class RenderersManager {
-    instances: Set<RendererInstance> = new Set();
-
-    constructor() {
-        store.on("commandUpdate", (cmd) => {
-            for(let inst of this.instances) {
-                if(inst.command.path.join(" ") !== cmd.path.join(" ")) continue;
-                inst.command = cmd;
-                if(!inst.command.default) continue;
-                inst.setNode();
-            }
-        });
-    }
-
-    create(command: InternalCommand, interaction: ChatInputCommandInteraction) {
-        const renderer = new RendererInstance(interaction, command);
-        renderer.setNode();
-        renderer.initialRun();
-        this.instances.add(renderer);
-    }
-
-    dispatchInteraction(int: Interaction) {
-        for(let inst of this.instances) {
-            inst.events.dispatch(int);
-        }
-    }
-}
-
-export const renderers = new RenderersManager();
-
-import.meta.hot?.accept();

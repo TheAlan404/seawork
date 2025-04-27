@@ -36,13 +36,17 @@ export default function TabsExampleCommand({
 
                     <Tabs.Panel value="a">
                         <text>
-                            # Tab A
-                            {"\n\n"}
+                            # Tab A{"\n"}
+                            {"\n"}
                             very cool tab btw
                         </text>
                     </Tabs.Panel>
                     <Tabs.Panel value="b">
-                        <text>b</text>
+                        <text>
+                            # Tab B{"\n"}
+                            {"\n"}
+                            also very epic
+                        </text>
                     </Tabs.Panel>
                     <Tabs.Panel value="c">
                         <text>c</text>

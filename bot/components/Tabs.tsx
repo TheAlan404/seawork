@@ -54,7 +54,7 @@ Tabs.Buttons = ({
 
                 return (
                     <button
-                        // key={value} ??? TODO investigate
+                        key={value}
                         onClick={() => setTab(value)}
                         style={isActive ? "primary" : "secondary"}
                     >

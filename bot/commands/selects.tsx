@@ -1,7 +1,20 @@
+import { number } from "#core/commands/options/index.ts";
 import { useState } from "react"
 
-export default function Test() {
+export const options = [
+    number("min", {}),
+    number("max", {}),
+];
+
+export default function Test({
+    options: { min, max },
+}: Command.ComponentProps) {
     const [state, setState] = useState<any>(null);
+
+    const props = {
+        min: min || undefined,
+        max: max || undefined,
+    };
 
     return (
         <message v2 ephemeral>
@@ -17,6 +30,7 @@ export default function Test() {
                         type="user"
                         onSelect={(v) => setState(v)}
                         placeholder="User Select"
+                        {...props}
                     />
                 </actionRow>
                 <actionRow>
@@ -24,6 +38,7 @@ export default function Test() {
                         type="channel"
                         onSelect={(v) => setState(v)}
                         placeholder="Channel Select"
+                        {...props}
                     />
                 </actionRow>
                 <actionRow>
@@ -31,6 +46,7 @@ export default function Test() {
                         type="mentionable"
                         onSelect={(v) => setState(v)}
                         placeholder="Mentionable Select"
+                        {...props}
                     />
                 </actionRow>
                 <actionRow>
@@ -38,6 +54,7 @@ export default function Test() {
                         type="role"
                         onSelect={(v) => setState(v)}
                         placeholder="Role Select"
+                        {...props}
                     />
                 </actionRow>
                 <text>

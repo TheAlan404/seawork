@@ -1,6 +1,7 @@
 import { ChatInputCommandInteraction } from "discord.js";
 import { ExecutionContext, InternalCommand } from "../types";
-import { renderers } from "#core/jsx/renderer/index.ts";
+import { createElement } from "react";
+import { renderers } from "#core/jsx/renderer/manager.ts";
 
 export const runInteractionCommand = (
     interaction: ChatInputCommandInteraction,
@@ -23,7 +24,14 @@ export const runInteractionCommand = (
         options,
         render: () => {
             if (!cmd.default) return console.log("ExecutionContext#render() called on a command with no default export");
-            renderers.create(cmd, interaction);
+            let _props = ctx;
+            let _node = createElement(cmd.default, _props);
+            console.log("Rendering: " + cmd.path.join(" "))
+            renderers.create(
+                cmd,
+                interaction,
+                _node,
+            );
         },
     };
 

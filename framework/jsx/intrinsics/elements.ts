@@ -11,39 +11,39 @@ export interface SeaworkElements {
     message: PropsWithChildren<{
         v2?: boolean;
         ephemeral?: boolean;
-    }>;
+    }> & React.JSX.IntrinsicAttributes;
 
     container: PropsWithChildren<{
         color?: ColorResolvable;
         spoiler?: boolean;
-    }>;
-    actionRow: PropsWithChildren;
-    section: PropsWithChildren;
-    accessory: PropsWithChildren;
+    }> & React.JSX.IntrinsicAttributes;
+    actionRow: PropsWithChildren & React.JSX.IntrinsicAttributes;
+    section: PropsWithChildren & React.JSX.IntrinsicAttributes;
+    accessory: PropsWithChildren & React.JSX.IntrinsicAttributes;
 
-    text: PropsWithChildren;
+    text: PropsWithChildren & React.JSX.IntrinsicAttributes;
     thumbnail: {
         description?: string;
         spoiler?: boolean;
         media?: UnfurledMediaResolvable;
-    };
+    } & React.JSX.IntrinsicAttributes;
 
     gallery: {
         items?: APIMediaGalleryItem[];
-    };
+    } & React.JSX.IntrinsicAttributes;
 
     file: {
         file: UnfurledMediaResolvable;
         spoiler?: boolean;
-    };
+    } & React.JSX.IntrinsicAttributes;
 
     separator: {
         divider?: boolean;
         spacing?: "sm" | "lg";
-    };
+    } & React.JSX.IntrinsicAttributes;
 
-    button: PropsWithChildren<ButtonProps>;
-    select: SelectProps;
+    button: PropsWithChildren<ButtonProps> & React.JSX.IntrinsicAttributes;
+    select: SelectProps & React.JSX.IntrinsicAttributes;
 
     textInput: {
         label: string;
@@ -55,5 +55,5 @@ export interface SeaworkElements {
         max?: number;
         value?: string;
         // onSubmit?: EventHandler<{}>;
-    };
+    } & React.JSX.IntrinsicAttributes;
 };

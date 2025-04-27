@@ -1,7 +1,7 @@
 import { ApplicationCommandType, Interaction } from "discord.js";
 import { store } from "../commands/store/store";
-import { renderers } from "../jsx/renderer";
 import { runInteractionCommand } from "#core/commands/execute/run.ts";
+import { renderers } from "#core/jsx/renderer/manager.ts";
 
 export const handleInteraction = async (interaction: Interaction) => {
     if(interaction.isChatInputCommand()) {
@@ -17,6 +17,7 @@ export const handleInteraction = async (interaction: Interaction) => {
 
         runInteractionCommand(interaction, cmd);
     } else if(interaction.isButton()) {
+        console.log("recieved button")
         await interaction.deferUpdate();
         renderers.dispatchInteraction(interaction);
     } else if(interaction.isAnySelectMenu()) {
