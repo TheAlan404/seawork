@@ -45,26 +45,12 @@ export class RendererInstance {
         const options: Record<string, any> = {};
 
         for(let option of this.interaction.options.data) {
-            if(
-                [
-                    ApplicationCommandOptionType.String,
-                    ApplicationCommandOptionType.Number,
-                    ApplicationCommandOptionType.Integer,
-                    ApplicationCommandOptionType.Boolean,
-                ].includes(option.type)
-            ) {
-                options[option.name] = option.value ?? null;
-            } else if(option.type == ApplicationCommandOptionType.User) {
-                options[option.name] = option.user;
-            } else if(option.type == ApplicationCommandOptionType.Attachment) {
-                options[option.name] = option.attachment;
-            } else if(option.type == ApplicationCommandOptionType.Role) {
-                options[option.name] = option.role;
-            } else if(option.type == ApplicationCommandOptionType.Channel) {
-                options[option.name] = option.channel;
-            } else if(option.type == ApplicationCommandOptionType.Mentionable) {
-                options[option.name] = option.role || option.user; // ?
-            }
+            options[option.name] = option.value
+                || option.user
+                || option.role
+                || option.channel
+                || option.attachment
+                || option.member;
         };
 
         return {
