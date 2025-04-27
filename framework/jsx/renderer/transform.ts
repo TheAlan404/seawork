@@ -62,7 +62,7 @@ export class PayloadTransformer {
         let node = _node as IntrinsicNode;
 
         switch (node.type) {
-            case "actionRow":
+            case "row":
                 return {
                     type: ComponentType.ActionRow,
                     components: this.toDiscordComponentsArray(node.children) as any,

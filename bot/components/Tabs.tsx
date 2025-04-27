@@ -46,7 +46,7 @@ Tabs.Buttons = ({
     const { tab: currentTab, setTab } = useContext(TabContext);
 
     return (
-        <actionRow>
+        <row>
             {data.map((tab, i) => {
                 const value = typeof tab == "string" ? tab : tab.value;
                 const label = typeof tab == "string" ? tab : (tab.label || tab.value);
@@ -62,7 +62,7 @@ Tabs.Buttons = ({
                     </button>
                 );
             })}
-        </actionRow>
+        </row>
     );
 };
 
@@ -74,7 +74,7 @@ Tabs.Select = ({
     const { tab: currentTab, setTab } = useContext(TabContext);
 
     return (
-        <actionRow>
+        <row>
             <select
                 type="string"
                 defaultValues={[currentTab]}
@@ -91,6 +91,6 @@ Tabs.Select = ({
                     };
                 })}
             />
-        </actionRow>
+        </row>
     );
 };

@@ -16,7 +16,7 @@ export default function CounterCommand() {
                 <text>
                     Counter: {count}
                 </text>
-                <actionRow>
+                <row>
                     <button
                         onClick={() => setCount(c => c-1)}
                     >
@@ -27,7 +27,7 @@ export default function CounterCommand() {
                     >
                         +1
                     </button>
-                </actionRow>
+                </row>
             </container>
         </message>
     )

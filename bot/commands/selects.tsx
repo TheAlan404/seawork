@@ -1,9 +1,9 @@
-import { number } from "#core/commands/options/index.ts";
+import { integer } from "#core/commands/options/index.ts";
 import { useState } from "react"
 
 export const options = [
-    number("min", {}),
-    number("max", {}),
+    integer("min", {}),
+    integer("max", {}),
 ];
 
 export default function Test({
@@ -25,38 +25,38 @@ export default function Test({
                     {JSON.stringify(state, null, 2)}{"\n"}
                     ```{"\n"}
                 </text>
-                <actionRow>
+                <row>
                     <select
                         type="user"
                         onSelect={(v) => setState(v)}
                         placeholder="User Select"
                         {...props}
                     />
-                </actionRow>
-                <actionRow>
+                </row>
+                <row>
                     <select
                         type="channel"
                         onSelect={(v) => setState(v)}
                         placeholder="Channel Select"
                         {...props}
                     />
-                </actionRow>
-                <actionRow>
+                </row>
+                <row>
                     <select
                         type="mentionable"
                         onSelect={(v) => setState(v)}
                         placeholder="Mentionable Select"
                         {...props}
                     />
-                </actionRow>
-                <actionRow>
+                </row>
+                <row>
                     <select
                         type="role"
                         onSelect={(v) => setState(v)}
                         placeholder="Role Select"
                         {...props}
                     />
-                </actionRow>
+                </row>
                 <text>
                     thank you come again :3
                 </text>

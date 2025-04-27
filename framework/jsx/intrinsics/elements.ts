@@ -17,7 +17,7 @@ export interface SeaworkElements {
         color?: ColorResolvable;
         spoiler?: boolean;
     }> & React.JSX.IntrinsicAttributes;
-    actionRow: PropsWithChildren & React.JSX.IntrinsicAttributes;
+    row: PropsWithChildren & React.JSX.IntrinsicAttributes;
     section: PropsWithChildren & React.JSX.IntrinsicAttributes;
     accessory: PropsWithChildren & React.JSX.IntrinsicAttributes;
 
