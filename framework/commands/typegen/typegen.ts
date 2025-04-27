@@ -19,7 +19,7 @@ export const typegenCommand = (cmd: InternalCommand) => {
                 indented([
                     `options: {`,
                     indented(cmd.options?.map(opt => (
-                        `${opt.name}: ${typegenCommandOption(opt)};`
+                        `${opt.name}: ${typegenCommandOption(opt)}${!opt.data.required ? " | null" : ""};`
                     )) || []),
                     `};`,
                 ]),
@@ -27,7 +27,6 @@ export const typegenCommand = (cmd: InternalCommand) => {
             ]),
             `}`,
         ]),
-
         `}`,
     ].join("\n");
 };
