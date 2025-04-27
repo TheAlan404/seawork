@@ -1,6 +1,6 @@
 import { v4 } from "uuid";
 import { type InternalNode } from "../reconciler/types";
-import { type APIChannelSelectComponent, type APIMentionableSelectComponent, type APIMessageComponent, type APIRoleSelectComponent, type APIUserSelectComponent, type APIStringSelectComponent, ComponentType } from "discord-api-types/v10";
+import { type APIChannelSelectComponent, type APIMentionableSelectComponent, type APIMessageComponent, type APIRoleSelectComponent, type APIUserSelectComponent, type APIStringSelectComponent, ComponentType, APIModalComponent, APIModalInteractionResponseCallbackData } from "discord-api-types/v10";
 import { type BaseMessageOptions, resolveColor } from "discord.js";
 import type { RendererEventContainer } from "./events";
 
@@ -16,7 +16,7 @@ export type IntrinsicNode = InstrinsicNodesMap[keyof React.JSX.IntrinsicElements
 
 type AllSelectComponents = APIStringSelectComponent | APIUserSelectComponent | APIRoleSelectComponent | APIChannelSelectComponent | APIMentionableSelectComponent;
 
-export type PayloadOutput = BaseMessageOptions & {
+export type MessagePayloadOutput = BaseMessageOptions & {
     v2: boolean;
     ephemeral: boolean;
 };
@@ -32,14 +32,14 @@ export class PayloadTransformer {
         return `auto:${v4()}`;
     }
 
-    toMessagePayload(root: InternalNode | null): PayloadOutput | { error: string; } {
+    toMessagePayload(root: InternalNode | null): MessagePayloadOutput | { error: string; } {
         if (!root) return { error: "Container empty" };
         if (root.type !== "message") return { error: "Root is not a <message> component" };
 
         let components = this.toDiscordComponentsArray(root.children);
 
         let v2 = !!root.props.v2;
-        let payload: PayloadOutput = {
+        let payload: MessagePayloadOutput = {
             v2,
             ephemeral: !!root.props.ephemeral,
             components,
@@ -77,9 +77,9 @@ export class PayloadTransformer {
                 const nonAccessory = node.children.filter(x => x.type !== "accessory");
                 const accessoryNode = node.children.find(x => x.type == "accessory")?.children[0];
 
-                if(!accessoryNode) return null;
+                if (!accessoryNode) return null;
                 const accessory = this.toDiscordComponent(accessoryNode);
-                if(!accessory) return null;
+                if (!accessory) return null;
 
                 return {
                     type: ComponentType.Section,
@@ -92,7 +92,7 @@ export class PayloadTransformer {
                     content: this.toText(node),
                 };
             case "thumbnail":
-                if(!node.props.media) return null;
+                if (!node.props.media) return null;
 
                 return {
                     type: 11,
@@ -101,7 +101,7 @@ export class PayloadTransformer {
                     spoiler: node.props.spoiler,
                 };
             case "gallery":
-                if(!node.props.items) return null;
+                if (!node.props.items) return null;
 
                 return {
                     type: 12,
@@ -138,7 +138,7 @@ export class PayloadTransformer {
 
         const custom_id = !("skuId" in node.props || "url" in node.props) ? (node.props.customId || this.createCustomId()) : undefined;
         if (custom_id) {
-            this.events.registerButtonOnClick(custom_id, (node.props as any).onClick);
+            this.events.registerButton(custom_id, (node.props as any).onClick);
         }
 
         return {
@@ -154,7 +154,7 @@ export class PayloadTransformer {
 
     toDiscordSelectComponent(node: InstrinsicNodesMap["select"]): AllSelectComponents {
         const custom_id = node.props.customId || this.createCustomId();
-        this.events.registerSelectOnSelect(custom_id, (node.props as any).onSelect);
+        this.events.registerSelect(custom_id, (node.props as any).onSelect);
 
         return {
             type: {
@@ -199,6 +199,25 @@ export class PayloadTransformer {
             value: node.props.value,
             min_length: node.props.min,
             max_length: node.props.max,
+        };
+    }
+
+    toModalData(_node: InternalNode): APIModalInteractionResponseCallbackData | { error: string } {
+        let node = _node as InstrinsicNodesMap["modal"];
+        if (node.type !== "modal") return { error: "Element is not <modal>" };
+        const custom_id = node.props.customId || this.createCustomId();
+        this.events.registerModal(custom_id, (node.props as any).onSelect);
+
+        const components = this.toDiscordComponentsArray(node.children)
+            .map(x => x.type == ComponentType.ActionRow ? x : ({
+                type: ComponentType.ActionRow,
+                components: [x],
+            })) as any;
+
+        return {
+            title: node.props.title,
+            custom_id,
+            components,
         };
     }
 };

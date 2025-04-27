@@ -1,49 +1,46 @@
-import type { AnySelectMenuInteraction, ButtonInteraction, ComponentType, Interaction } from "discord.js";
-import type { EventHandler } from "../intrinsics/elements";
+import type { AnySelectMenuInteraction, ButtonInteraction, ComponentType, Interaction, ModalSubmitInteraction, Snowflake } from "discord.js";
+import { DJSXEventHandler } from "../intrinsics/events";
 
 export class RendererEventContainer {
-    buttonOnClick: Map<string, (i: ButtonInteraction) => void> = new Map();
-    selectOnSelect: Map<string, (t: any, i: AnySelectMenuInteraction) => void> = new Map();
+    onButtonClick: Map<string, DJSXEventHandler<void, ButtonInteraction>> = new Map();
+    onSelect: Map<string, DJSXEventHandler<Snowflake[], AnySelectMenuInteraction>> = new Map();
+    onModalSubmit: Map<string, DJSXEventHandler<Record<string, string>, ModalSubmitInteraction>> = new Map();
 
     clear() {
-        this.buttonOnClick.clear();
+        this.onButtonClick.clear();
+        this.onSelect.clear();
+        this.onModalSubmit.clear();
     }
 
-    registerButtonOnClick(id: string, handler?: EventHandler<ButtonInteraction>) {
+    registerButton(id: string, handler?: DJSXEventHandler<void, ButtonInteraction>) {
         if(!handler) return;
-        this.buttonOnClick.set(id, handler);
+        this.onButtonClick.set(id, handler);
     }
 
-    registerSelectOnSelect(id: string, handler?: (t: any, i: AnySelectMenuInteraction) => any) {
+    registerSelect(id: string, handler?: DJSXEventHandler<Snowflake[], AnySelectMenuInteraction>) {
         if(!handler) return;
-        this.selectOnSelect.set(id, handler);
+        this.onSelect.set(id, handler);
+    }
+
+    registerModal(id: string, handler?: DJSXEventHandler<Record<string, string>, ModalSubmitInteraction>) {
+        if(!handler) return;
+        this.onModalSubmit.set(id, handler);
     }
 
     dispatch(int: Interaction) {
         if(int.isButton()) {
-            let cb = this.buttonOnClick.get(int.customId);
+            let cb = this.onButtonClick.get(int.customId);
             cb?.(int);
         } else if(int.isAnySelectMenu()) {
-            let cb = this.selectOnSelect.get(int.customId);
-
-            console.log("LOGHOOK#1",int.values);
-
-            if(int.isStringSelectMenu()) {
-                let v = int.values;
-                cb?.(v, int);
-            } else if(int.isUserSelectMenu()) {
-                let v = int.values;
-                cb?.(v, int);
-            } else if(int.isRoleSelectMenu()) {
-                let v = int.values;
-                cb?.(v, int);
-            } else if(int.isMentionableSelectMenu()) {
-                let v = int.values;
-                cb?.(v, int);
-            } else if(int.isChannelSelectMenu()) {
-                let v = int.values;
-                cb?.(v, int);
+            let cb = this.onSelect.get(int.customId);
+            cb?.(int.values, int);
+        } else if(int.isModalSubmit()) {
+            let cb = this.onModalSubmit.get(int.customId);
+            let form: Record<string, string> = {};
+            for(let [name, component] of int.fields.fields) {
+                form[name] = component.value;
             }
+            cb?.(form, int);
         }
     }
 };

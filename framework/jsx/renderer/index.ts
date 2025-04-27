@@ -1,6 +1,6 @@
 import { ApplicationCommandOptionType, type AnySelectMenuInteraction, type ButtonInteraction, type ChatInputCommandInteraction, type Interaction, type InteractionReplyOptions, type InteractionResponseType, type Routes } from "discord.js";
 import { InternalReactRenderer } from "../reconciler";
-import { type PayloadOutput, PayloadTransformer } from "./transform";
+import { type MessagePayloadOutput, PayloadTransformer } from "./transform";
 import type { Container } from "../reconciler/types";
 import { RendererEventContainer } from "./events";
 import { debounceAsync } from "#core/utils/debounceAsync.ts";
@@ -49,7 +49,7 @@ export class RendererInstance {
         this.editReplyDebounced(payload);
     }
 
-    private readonly editReplyDebounced = debounceAsync(async (payload: PayloadOutput) => {
+    private readonly editReplyDebounced = debounceAsync(async (payload: MessagePayloadOutput) => {
         try {
             await this.editReply(payload);
             console.log("[renderer] Message updated")
@@ -59,7 +59,7 @@ export class RendererInstance {
         }
     }, 0);
 
-    async editReply(payload: PayloadOutput) {
+    async editReply(payload: MessagePayloadOutput) {
         try {
             const { v2, ephemeral, ...body } = payload;
 

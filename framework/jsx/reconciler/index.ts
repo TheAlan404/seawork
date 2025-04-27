@@ -1,10 +1,9 @@
 import Reconciler, { type OpaqueRoot } from "react-reconciler";
 import { InternalHostConfig } from "./HostConfig";
-import type { Container } from "./types";
+import type { Container, InternalNode } from "./types";
 import { ConcurrentRoot } from "react-reconciler/constants.js";
 import EventEmitter from "node:events";
-import type TypedEmitter from "typed-emitter"
-import { createElement, Fragment } from "react";
+import type TypedEmitter from "typed-emitter";
 
 export const reconciler = Reconciler(InternalHostConfig);
 
@@ -16,7 +15,7 @@ export type InternalReactRendererEvents = {
 
 export class InternalReactRenderer extends (EventEmitter as new () => TypedEmitter<InternalReactRendererEvents>) {
     container: Container;
-    root: OpaqueRoot;
+    fiberRoot: OpaqueRoot;
 
     constructor() {
         super();
@@ -26,7 +25,7 @@ export class InternalReactRenderer extends (EventEmitter as new () => TypedEmitt
             onRender: () => this.emit("render", this.container),
         };
 
-        this.root = reconciler.createContainer(
+        this.fiberRoot = reconciler.createContainer(
             this.container,
             ConcurrentRoot,
             null,
@@ -39,18 +38,13 @@ export class InternalReactRenderer extends (EventEmitter as new () => TypedEmitt
     }
 
     setRenderedNode(node: React.ReactNode) {
-        reconciler.updateContainer(node, this.root, null, () => {
+        reconciler.updateContainer(node, this.fiberRoot, null, () => {
             this.emit("containerUpdated");
         });
     }
 
-    stop() {
-        // ?
-        this.setRenderedNode(createElement(Fragment));
-    }
-
     static renderOnce(node: React.ReactNode) {
-        return new Promise((res) => {
+        return new Promise<InternalNode | null>((res) => {
             let renderer = new InternalReactRenderer();
             renderer.on("render", (continer) => {
                 res(continer.node);

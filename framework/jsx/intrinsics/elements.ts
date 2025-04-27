@@ -5,12 +5,15 @@ import type { UnfurledMediaResolvable } from "./base";
 import type { SelectProps } from "./select";
 import type { ButtonProps } from "./button";
 
-export type EventHandler<T> = (event: T) => any;
-
 export interface SeaworkElements {
     message: PropsWithChildren<{
         v2?: boolean;
         ephemeral?: boolean;
+    }> & React.JSX.IntrinsicAttributes;
+    modal: PropsWithChildren<{
+        title: string;
+        customId?: string;
+        onSubmit?: () => void;
     }> & React.JSX.IntrinsicAttributes;
 
     container: PropsWithChildren<{
@@ -54,6 +57,5 @@ export interface SeaworkElements {
         min?: number;
         max?: number;
         value?: string;
-        // onSubmit?: EventHandler<{}>;
     } & React.JSX.IntrinsicAttributes;
 };

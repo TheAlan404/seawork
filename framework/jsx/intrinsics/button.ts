@@ -1,5 +1,6 @@
 import type { ButtonInteraction } from "discord.js";
 import type { BaseInteractableProps } from "./base";
+import { DJSXEventHandler } from "./events";
 
 export interface BaseButtonProps extends BaseInteractableProps {
     disabled?: boolean;
@@ -8,7 +9,7 @@ export interface BaseButtonProps extends BaseInteractableProps {
 
 export interface DefaultButtonProps extends BaseButtonProps {
     style?: "primary" | "secondary" | "success" | "danger";
-    onClick?: (int: ButtonInteraction) => void;
+    onClick?: DJSXEventHandler<void, ButtonInteraction>;
 };
 
 export interface LinkButtonProps extends BaseButtonProps {
