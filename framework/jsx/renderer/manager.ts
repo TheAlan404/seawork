@@ -10,27 +10,23 @@ export class RenderersManager {
     constructor() {
         store.on("commandUpdate", (cmd) => {
             for(let inst of this.instances) {
-                if(inst.id !== cmd.path.join(" ")) continue;
-                inst.mount(); // is this even needed?
+                inst.mount(); // mmm
             }
         });
     }
 
     create(
-        command: InternalCommand,
         interaction: ChatInputCommandInteraction,
         node?: ReactNode,
     ) {
         const renderer = new RendererInstance(
-            command.path.join(" "),
             interaction,
             node,
         );
-        try {
-            renderer.mount();
-            console.log("Renderer created", renderer);
-            this.instances.add(renderer);
-        } catch(e) { console.log(e) }
+        
+        renderer.mount();
+        console.log("Renderer created", renderer);
+        this.instances.add(renderer);
     }
 
     dispatchInteraction(int: Interaction) {

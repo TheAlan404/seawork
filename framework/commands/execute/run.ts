@@ -28,7 +28,6 @@ export const runInteractionCommand = (
             let _node = createElement(cmd.default, _props);
             console.log("Rendering: " + cmd.path.join(" "))
             renderers.create(
-                cmd,
                 interaction,
                 _node,
             );

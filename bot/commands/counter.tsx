@@ -18,14 +18,24 @@ export default function CounterCommand() {
                 </text>
                 <row>
                     <button
-                        onClick={() => setCount(c => c-1)}
+                        onClick={() => setCount(c => c - 1)}
                     >
                         -1
                     </button>
                     <button
-                        onClick={() => setCount(c => c+1)}
+                        onClick={() => setCount(c => c + 1)}
                     >
                         +1
+                    </button>
+                </row>
+                <separator divider />
+                <row>
+                    <button
+                        onClick={(int) => {
+                            // int.showModal()
+                        }}
+                    >
+                        Open Modal
                     </button>
                 </row>
             </container>

@@ -4,9 +4,10 @@ import { type MessagePayloadOutput, PayloadTransformer } from "./transform";
 import type { Container } from "../reconciler/types";
 import { RendererEventContainer } from "./events";
 import { debounceAsync } from "#core/utils/debounceAsync.ts";
+import { v4 } from "uuid";
 
 export class RendererInstance {
-    id: string;
+    id = v4();
     renderer: InternalReactRenderer;
     interaction: ChatInputCommandInteraction;
     transformer: PayloadTransformer;
@@ -16,11 +17,9 @@ export class RendererInstance {
     initialReplied: boolean = false;
 
     constructor(
-        id: string,
         interaction: ChatInputCommandInteraction,
         node?: React.ReactNode,
     ) {
-        this.id = id;
         this.renderer = new InternalReactRenderer();
         this.interaction = interaction;
         this.events = new RendererEventContainer();
@@ -69,18 +68,22 @@ export class RendererInstance {
                 if(v2) flags.push("IsComponentsV2");
                 if(ephemeral) flags.push("Ephemeral");
 
-                await this.interaction.reply({
+                await (this.lastInteraction || this.interaction).reply({
                     withResponse: true,
                     flags,
                     ...body,
                 });
 
+                this.lastInteraction = null;
+
                 this.initialReplied = true;
             } else {
-                await this.interaction.editReply({
+                await (this.lastInteraction || this.interaction).editReply({
                     withComponents: true,
                     ...body,
                 });
+
+                this.lastInteraction = null;
             }
         } catch(e) {
             await this.handleError(e as Error);
