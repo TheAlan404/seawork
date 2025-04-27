@@ -10,6 +10,11 @@ export const options = [
     })
 ];
 
+export const execute: Command.Execute = (ctx) => {
+    console.log("Execute function works!");
+    ctx.render();
+};
+
 export default function TabsExampleCommand({
     options: {
         type = "select",

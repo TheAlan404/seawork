@@ -4,6 +4,7 @@ import { InternalCommandOption } from "./options";
 export interface BaseCommandContext {
     client: Client;
     interaction: ChatInputCommandInteraction;
+    options: {};
 };
 
 export interface ExecutionContext extends BaseCommandContext {

@@ -12,25 +12,33 @@ export const typegenCommand = (cmd: InternalCommand) => {
     return [
         `declare module "${["bot", "commands", ...cmd.path].join("/")}" {`,
         indented([
+            `type OptionsType = {`,
+            indented(typegenCommandOptionsObject(cmd.options || [])),
+            `};`,
+            "",
+            `type Context = {`,
+            indented([
+                `options: OptionsType;`,
+            ]),
+            `};`,
+            "",
             `namespace Command {`,
             indented([
                 `type Options = T.InternalCommandOption[];`,
-                `type Execute = T.AnyCommandModule["execute"];`,
+                `type Execute = (ctx: T.ExecutionContext & Context) => any;`,
                 `type Details = T.AnyCommandModule["details"];`,
-                `type ComponentProps = T.BaseCommandContext & {`,
-                indented([
-                    `options: {`,
-                    indented(cmd.options?.map(opt => (
-                        `${opt.name}: ${typegenCommandOption(opt)}${!opt.data.required ? " | null" : ""};`
-                    )) || []),
-                    `};`,
-                ]),
-                `};`,
+                `type ComponentProps = T.BaseCommandContext & Context;`,
             ]),
             `}`,
         ]),
         `}`,
     ].join("\n");
+};
+
+export const typegenCommandOptionsObject = (opts: InternalCommandOption[]) => {
+    return (opts?.map(opt => (
+        `${opt.name}: ${typegenCommandOption(opt)}${!opt.data.required ? " | null" : ""};`
+    )) || []);
 };
 
 export const typegenCommandOption = (opt: InternalCommandOption) => {
