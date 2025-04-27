@@ -3,7 +3,7 @@ import { removeExt, splitSegments, traverseAllFiles } from "./utils";
 import { InternalCommand } from "../types";
 import { store } from "./store";
 import { hmrImport } from "../../import";
-import { AnyCommandModule } from "../module/types";
+import { loadCommandModule } from "../module/load";
 
 const CommandsPath = join("bot", "commands");
 
@@ -32,13 +32,6 @@ export const loadCommands = async () => {
     }
 
     return await Promise.all(promises);
-};
-
-export const loadCommandModule = (
-    cmd: InternalCommand,
-    mod: AnyCommandModule,
-) => {
-    if (typeof mod.default == "function") cmd.component = mod.default;
 };
 
 import.meta.hot?.accept();

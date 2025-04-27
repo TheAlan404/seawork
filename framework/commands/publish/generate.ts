@@ -1,6 +1,9 @@
 import { ApplicationCommandType, RESTPostAPIChatInputApplicationCommandsJSONBody } from "discord.js";
 import { store } from "../store/store";
 
+// TODO: serialize cmd.options
+// TODO: subcommands + subcommand groups
+
 export const createCommandsJSON = () => {
     let json: RESTPostAPIChatInputApplicationCommandsJSONBody[] = [];
     
