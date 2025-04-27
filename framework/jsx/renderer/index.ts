@@ -6,6 +6,7 @@ import { createElement, Fragment } from "react";
 import type { Container } from "../reconciler/types";
 import { store } from "../../commands/store/store";
 import { RendererEventContainer } from "./events";
+import { debounceAsync } from "#core/utils/debounceAsync.ts";
 
 export class RendererInstance {
     renderer: InternalReactRenderer;
@@ -45,15 +46,18 @@ export class RendererInstance {
         this.events.clear();
         let payload = this.transformer.toMessagePayload(container.node);
         if('error' in payload) return console.log(`Failed to compute message payload: ${payload.error}`);
-        
+        this.editReplyDebounced(payload);
+    }
+
+    private readonly editReplyDebounced = debounceAsync(async (payload: PayloadOutput) => {
         try {
             await this.editReply(payload);
             console.log("[renderer] Message updated")
         } catch(e) {
             console.log("[renderer] Message update error", e);
-            this.handleError(e as Error);
+            await this.handleError(e as Error);
         }
-    }
+    }, 0);
 
     async editReply(payload: PayloadOutput) {
         try {
