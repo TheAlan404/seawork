@@ -11,12 +11,16 @@ export const options = [
 ];
 
 export default function TabsExampleCommand({
-    
+    options: {
+        type,
+    },
 }: Command.ComponentProps) {
     return (
         <message v2 ephemeral>
             <container>
                 <Tabs initialTab="a">
+                    {type}
+                    
                     <Tabs.Buttons
                         data={["a", "b", "c"]}
                     />

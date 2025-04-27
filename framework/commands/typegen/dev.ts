@@ -6,8 +6,13 @@ store.on("commandUpdate", () => {
     devTypeGen();
 });
 
+store.on("loadedCommands", () => {
+    devTypeGen();
+});
+
 export const devTypeGen = () => {
     cache.writeTypes(createTypesDts());
+    console.log(`Types generated for ${store.commands.size} commands`);
 };
 
 const createTypesDts = () => {

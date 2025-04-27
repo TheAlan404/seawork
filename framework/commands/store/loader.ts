@@ -9,6 +9,7 @@ const CommandsPath = join("bot", "commands");
 
 export const loadCommands = async () => {
     store.commands.clear();
+    store.emit("loadingCommands");
 
     console.log("Loading all commands");
 
@@ -31,7 +32,8 @@ export const loadCommands = async () => {
         }));
     }
 
-    return await Promise.all(promises);
+    await Promise.all(promises);
+    store.emit("loadedCommands");
 };
 
 import.meta.hot?.accept();

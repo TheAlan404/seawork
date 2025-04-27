@@ -3,7 +3,7 @@ import { REST } from "discord.js";
 import { createCommandsJSON } from "./generate";
 import config from "../../../config";
 import { publishCommands } from "./publish";
-import { loadCommands } from "../store/load";
+import { loadCommands } from "../store/loader";
 
 async function main() {
     let token = process.env.TOKEN;

@@ -3,6 +3,8 @@ import { InternalCommand, InternalStore } from "../types";
 import TypedEventEmitter from "typed-emitter";
 
 export type StoreEvents = {
+    loadingCommands: () => void;
+    loadedCommands: () => void;
     commandUpdate: (cmd: InternalCommand) => void;
     commandAdd: (cmd: InternalCommand) => void;
 };
