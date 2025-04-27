@@ -13,7 +13,7 @@ export const options = [
 export default function TabsExampleCommand({
     options: {
         type = "select",
-    } = { type: "select" },
+    },
 }: Command.ComponentProps) {
     return (
         <message v2 ephemeral>

@@ -1,4 +1,4 @@
-import type { AnySelectMenuInteraction, ButtonInteraction, ChatInputCommandInteraction, Interaction, InteractionReplyOptions, InteractionResponseType, Routes } from "discord.js";
+import { ApplicationCommandOptionType, type AnySelectMenuInteraction, type ButtonInteraction, type ChatInputCommandInteraction, type Interaction, type InteractionReplyOptions, type InteractionResponseType, type Routes } from "discord.js";
 import { InternalReactRenderer } from "../reconciler";
 import { type PayloadOutput, PayloadTransformer } from "./transform";
 import type { InternalCommand } from "../../commands/types";
@@ -34,8 +34,43 @@ export class RendererInstance {
     }
 
     setNode() {
-        let node = createElement(this.command.component ?? Fragment);
+        let node = createElement(
+            this.command.component ?? Fragment,
+            this.getProps(),
+        );
         this.renderer.setRenderedNode(node);
+    }
+
+    getProps() {
+        const options: Record<string, any> = {};
+
+        for(let option of this.interaction.options.data) {
+            if(
+                [
+                    ApplicationCommandOptionType.String,
+                    ApplicationCommandOptionType.Number,
+                    ApplicationCommandOptionType.Integer,
+                    ApplicationCommandOptionType.Boolean,
+                ].includes(option.type)
+            ) {
+                options[option.name] = option.value ?? null;
+            } else if(option.type == ApplicationCommandOptionType.User) {
+                options[option.name] = option.user;
+            } else if(option.type == ApplicationCommandOptionType.Attachment) {
+                options[option.name] = option.attachment;
+            } else if(option.type == ApplicationCommandOptionType.Role) {
+                options[option.name] = option.role;
+            } else if(option.type == ApplicationCommandOptionType.Channel) {
+                options[option.name] = option.channel;
+            } else if(option.type == ApplicationCommandOptionType.Mentionable) {
+                options[option.name] = option.role || option.user; // ?
+            }
+        };
+
+        return {
+            client: this.interaction.client,
+            options,
+        };
     }
 
     async initialRun() {
