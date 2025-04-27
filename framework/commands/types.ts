@@ -8,4 +8,9 @@ export type InternalCommand = {
     path: string[];
     component?: React.ComponentType<any>;
     options?: InternalCommandOption[];
+    details?: CommandDetails;
+};
+
+export type CommandDetails = {
+    description?: string;
 };
