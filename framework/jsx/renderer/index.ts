@@ -1,9 +1,9 @@
-import { AnySelectMenuInteraction, ButtonInteraction, ChatInputCommandInteraction, Interaction, InteractionReplyOptions, InteractionResponseType, Routes } from "discord.js";
+import type { AnySelectMenuInteraction, ButtonInteraction, ChatInputCommandInteraction, Interaction, InteractionReplyOptions, InteractionResponseType, Routes } from "discord.js";
 import { InternalReactRenderer } from "../reconciler";
-import { PayloadOutput, PayloadTransformer } from "./transform";
-import { InternalCommand } from "../../commands/types";
+import { type PayloadOutput, PayloadTransformer } from "./transform";
+import type { InternalCommand } from "../../commands/types";
 import { createElement, Fragment } from "react";
-import { Container } from "../reconciler/types";
+import type { Container } from "../reconciler/types";
 import { store } from "../../commands/store/store";
 import { RendererEventContainer } from "./events";
 
@@ -44,7 +44,7 @@ export class RendererInstance {
     async render(container: Container) {
         this.events.clear();
         let payload = this.transformer.toMessagePayload(container.node);
-        if(!payload) return console.log("Failed to compute message payload");
+        if('error' in payload) return console.log(`Failed to compute message payload: ${payload.error}`);
         
         try {
             await this.editReply(payload);

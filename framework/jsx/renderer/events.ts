@@ -1,5 +1,5 @@
-import { AnySelectMenuInteraction, ButtonInteraction, ComponentType, Interaction } from "discord.js";
-import { EventHandler } from "../intrinsics/elements";
+import type { AnySelectMenuInteraction, ButtonInteraction, ComponentType, Interaction } from "discord.js";
+import type { EventHandler } from "../intrinsics/elements";
 
 export class RendererEventContainer {
     buttonOnClick: Map<string, (i: ButtonInteraction) => void> = new Map();

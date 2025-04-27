@@ -1,27 +1,27 @@
-import { APIStringSelectComponent, APIMediaGalleryItem, ChannelType, APISelectMenuOption } from "discord-api-types/v10";
-import { ButtonInteraction, ColorResolvable, StringSelectMenuInteraction, UserSelectMenuInteraction } from "discord.js";
-import { PropsWithChildren } from "react";
-import { UnfurledMediaResolvable } from "./base";
-import { SelectProps } from "./select";
-import { ButtonProps } from "./button";
+import type { APIStringSelectComponent, APIMediaGalleryItem, ChannelType, APISelectMenuOption } from "discord-api-types/v10";
+import type { ButtonInteraction, ColorResolvable, StringSelectMenuInteraction, UserSelectMenuInteraction } from "discord.js";
+import type { PropsWithChildren } from "react";
+import type { UnfurledMediaResolvable } from "./base";
+import type { SelectProps } from "./select";
+import type { ButtonProps } from "./button";
 
 export type EventHandler<T> = (event: T) => any;
 
 export interface SeaworkElements {
-    message: {
+    message: PropsWithChildren<{
         v2?: boolean;
         ephemeral?: boolean;
-    } & PropsWithChildren;
+    }>;
 
-    container: {
+    container: PropsWithChildren<{
         color?: ColorResolvable;
         spoiler?: boolean;
-    } & PropsWithChildren;
-    actionRow: {} & PropsWithChildren;
-    section: {} & PropsWithChildren;
-    accessory: {} & PropsWithChildren;
+    }>;
+    actionRow: PropsWithChildren;
+    section: PropsWithChildren;
+    accessory: PropsWithChildren;
 
-    text: {} & PropsWithChildren;
+    text: PropsWithChildren;
     thumbnail: {
         description?: string;
         spoiler?: boolean;
@@ -37,12 +37,12 @@ export interface SeaworkElements {
         spoiler?: boolean;
     };
 
-    seperator: {
+    separator: {
         divider?: boolean;
         spacing?: "sm" | "lg";
     };
 
-    button: ButtonProps & PropsWithChildren;
+    button: PropsWithChildren<ButtonProps>;
     select: SelectProps;
 
     textInput: {

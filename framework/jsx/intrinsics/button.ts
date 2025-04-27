@@ -1,5 +1,5 @@
-import { ButtonInteraction } from "discord.js";
-import { BaseInteractableProps } from "./base";
+import type { ButtonInteraction } from "discord.js";
+import type { BaseInteractableProps } from "./base";
 
 export interface BaseButtonProps extends BaseInteractableProps {
     disabled?: boolean;

@@ -1,9 +1,9 @@
 import { v4 } from "uuid";
-import { Container, InternalNode } from "../reconciler/types";
-import { APIChannelSelectComponent, APIMentionableSelectComponent, APIMessageComponent, APIRoleSelectComponent, APIUserSelectComponent, APIStringSelectComponent, ComponentType } from "discord-api-types/v10";
-import { APIMessage, BaseMessageOptions, ButtonInteraction, resolveColor } from "discord.js";
+import { Container, type InternalNode } from "../reconciler/types";
+import { type APIChannelSelectComponent, type APIMentionableSelectComponent, type APIMessageComponent, type APIRoleSelectComponent, type APIUserSelectComponent, type APIStringSelectComponent, ComponentType } from "discord-api-types/v10";
+import { APIMessage, type BaseMessageOptions, ButtonInteraction, resolveColor } from "discord.js";
 import { EventHandler } from "../intrinsics/elements";
-import { RendererEventContainer } from "./events";
+import type { RendererEventContainer } from "./events";
 
 export type InstrinsicNodesMap = {
     [K in keyof React.JSX.IntrinsicElements]: {
@@ -33,9 +33,9 @@ export class PayloadTransformer {
         return `auto:${v4()}`;
     }
 
-    toMessagePayload(root: InternalNode | null) {
-        if (!root) return console.log("Container empty");
-        if (root.type !== "message") return console.log("Root is not a <message> component");
+    toMessagePayload(root: InternalNode | null): PayloadOutput | { error: string; } {
+        if (!root) return { error: "Container empty" };
+        if (root.type !== "message") return { error: "Root is not a <message> component" };
 
         let components = this.toDiscordComponentsArray(root.children);
 
@@ -115,7 +115,7 @@ export class PayloadTransformer {
                     file: { url: node.props.file },
                     spoiler: node.props.spoiler,
                 }
-            case "seperator":
+            case "separator":
                 return {
                     type: 14,
                     divider: node.props.divider,
@@ -138,8 +138,10 @@ export class PayloadTransformer {
             "url" in node.props ? 5 : (["primary", "secondary", "success", "danger"].indexOf(node.props.style || "primary") + 1)
         );
 
-        const custom_id = node.props.customId || this.createCustomId();
-        this.events.registerButtonOnClick(custom_id, (node.props as any).onClick);
+        const custom_id = !("skuId" in node.props || "url" in node.props) ? (node.props.customId || this.createCustomId()) : undefined;
+        if (custom_id) {
+            this.events.registerButtonOnClick(custom_id, (node.props as any).onClick);
+        }
 
         return {
             type: 2,
@@ -154,7 +156,8 @@ export class PayloadTransformer {
 
     toDiscordSelectComponent(node: InstrinsicNodesMap["select"]): AllSelectComponents {
         const custom_id = node.props.customId || this.createCustomId();
-        
+        this.events.registerSelectOnSelect(custom_id, (node.props as any).onSelect);
+
         return {
             type: {
                 string: 3,
@@ -171,18 +174,18 @@ export class PayloadTransformer {
             ...(node.props.type == "string" ? {
                 options: node.props.options.map(option => ({
                     ...option,
-                    default: (node.props.value as string[] | undefined)?.includes(option.value),
+                    default: (node.props.defaultValues as string[] | undefined)?.includes(option.value),
                 })),
             } : {}),
             ...(node.props.type == "user" || node.props.type == "role" ? {
-                default_values: node.props.value?.map(id => ({ id, type: node.props.type })) as any,
+                default_values: node.props.defaultValues?.map(id => ({ id, type: node.props.type })) as any,
             } : {}),
             ...(node.props.type == "mentionable" ? {
-                default_values: node.props.value as any,
+                default_values: node.props.defaultValues as any,
             } : {}),
             ...(node.props.type == "channel" ? {
                 channel_types: node.props.channelTypes,
-                default_values: node.props.value?.map(id => ({ id, type: "channel" })) as any,
+                default_values: node.props.defaultValues?.map(id => ({ id, type: "channel" })) as any,
             } : {}),
         };
     }
