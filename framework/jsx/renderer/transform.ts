@@ -1,8 +1,7 @@
 import { v4 } from "uuid";
-import { Container, type InternalNode } from "../reconciler/types";
+import { type InternalNode } from "../reconciler/types";
 import { type APIChannelSelectComponent, type APIMentionableSelectComponent, type APIMessageComponent, type APIRoleSelectComponent, type APIUserSelectComponent, type APIStringSelectComponent, ComponentType } from "discord-api-types/v10";
-import { APIMessage, type BaseMessageOptions, ButtonInteraction, resolveColor } from "discord.js";
-import { EventHandler } from "../intrinsics/elements";
+import { type BaseMessageOptions, resolveColor } from "discord.js";
 import type { RendererEventContainer } from "./events";
 
 export type InstrinsicNodesMap = {
@@ -51,7 +50,6 @@ export class PayloadTransformer {
     }
 
     toText(node: InternalNode): string {
-        console.log("toText call", node)
         if (node.type == "#text") return node.props.text as string;
         return node.children.map(this.toText.bind(this)).join("");
     }

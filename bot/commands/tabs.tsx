@@ -1,6 +1,18 @@
+import { string } from "#core/commands/options/index.ts";
 import { Tabs } from "../components/Tabs";
 
-export default function TabsExampleCommand() {
+export const options = [
+    string("type", {
+        choices: [
+            { name: "Buttons", value: "buttons" },
+            { name: "Select", value: "select" },
+        ],
+    })
+];
+
+export default function TabsExampleCommand({
+    
+}: Command.ComponentProps) {
     return (
         <message v2 ephemeral>
             <container>
@@ -12,7 +24,7 @@ export default function TabsExampleCommand() {
                     <Tabs.Tab value="a">
                         <text>
                             # Tab A
-
+                            {"\n\n"}
                             very cool tab btw
                         </text>
                     </Tabs.Tab>
