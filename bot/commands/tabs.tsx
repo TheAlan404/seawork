@@ -1,4 +1,5 @@
 import { string } from "#core/commands/options/index.ts";
+import { useEffect, useState } from "react";
 import { Tabs } from "../components/Tabs";
 
 export const options = [
@@ -17,7 +18,7 @@ export const execute: Command.Execute = (ctx) => {
 
 export default function TabsExampleCommand({
     options: {
-        type = "select",
+        type = "buttons",
     },
 }: Command.ComponentProps) {
     return (
@@ -52,6 +53,12 @@ export default function TabsExampleCommand({
                         <text>c</text>
                     </Tabs.Panel>
                 </Tabs>
+
+                <row>
+                    <button style="danger">
+                        Button that does nothing
+                    </button>
+                </row>
             </container>
         </message>
     )

@@ -1,38 +1,50 @@
-import { ApplicationCommandOptionType, type AnySelectMenuInteraction, type ButtonInteraction, type ChatInputCommandInteraction, type Interaction, type InteractionReplyOptions, type InteractionResponseType, type Routes } from "discord.js";
+import { MessageFlags, type AnySelectMenuInteraction, type ButtonInteraction, type ChatInputCommandInteraction, type Interaction } from "discord.js";
 import { InternalReactRenderer } from "../reconciler";
-import { type MessagePayloadOutput, PayloadTransformer } from "./transform";
 import type { Container } from "../reconciler/types";
-import { RendererEventContainer } from "./events";
 import { debounceAsync } from "#core/utils/debounceAsync.ts";
-import { v4 } from "uuid";
+import { DJSXEventHandlerMap, MessagePayloadOutput, PayloadBuilder } from "./payload";
+import EventEmitter from "node:events";
+import TypedEventEmitter from "typed-emitter";
 
-export class RendererInstance {
-    id = v4();
-    renderer: InternalReactRenderer;
+export type DJSXRendererEventMap = {
+    error: (e: Error) => void;
+    fatalError: (e: Error) => void;
+    inactivity: () => void;
+    updatedMessage: (using: "reply" | "interaction" | "component") => void;
+};
+
+export class DJSXRenderer extends (EventEmitter as new () => TypedEventEmitter<DJSXRendererEventMap>) {
+    key?: string;
+    private renderer: InternalReactRenderer;
+    private events: Partial<DJSXEventHandlerMap> | null = null;
+
     interaction: ChatInputCommandInteraction;
-    transformer: PayloadTransformer;
-    events: RendererEventContainer;
-
     lastInteraction: ButtonInteraction | AnySelectMenuInteraction | null = null;
-    initialReplied: boolean = false;
+
+    private inactivityTimer: NodeJS.Timeout;
+    private INTERACTION_TOKEN_LIFE = 15 * 60 * 1000; // 15 minutes
+    private deferUpdateTimeout: NodeJS.Timeout | null = null;
+    private DEFER_TIME = 2 * 1000; // actually 3 seconds but we compromise
 
     constructor(
         interaction: ChatInputCommandInteraction,
         node?: React.ReactNode,
+        key?: string,
     ) {
-        this.renderer = new InternalReactRenderer();
+        super();
         this.interaction = interaction;
-        this.events = new RendererEventContainer();
-        this.transformer = new PayloadTransformer(this.events);
         this.node = node;
+        this.key = key;
+        this.renderer = new InternalReactRenderer();
+        this.mount();
 
-        this.renderer.on("render", (container) => {
-            this.render(container);
-        });
+        this.inactivityTimer = setTimeout(
+            () => this.emit("inactivity"),
+            this.INTERACTION_TOKEN_LIFE
+        );
 
-        this.renderer.on("renderError", (e) => this.handleError(e));
-
-        this.renderer.on("containerUpdated", () => console.log("[renderer] Container updated"));
+        this.renderer.on("render", this.render.bind(this));
+        this.renderer.on("renderError", this.handleError.bind(this));
     }
 
     node: React.ReactNode | null = null;
@@ -41,75 +53,124 @@ export class RendererInstance {
         this.renderer.setRenderedNode(this.node);
     }
 
-    async render(container: Container) {
-        this.events.clear();
-        let payload = this.transformer.toMessagePayload(container.node);
-        if('error' in payload) return console.log(`Failed to compute message payload: ${payload.error}`);
-        this.editReplyDebounced(payload);
+    private prefixCustomId() {
+        return `djsx:${this.key || "auto"}`;
     }
 
-    private readonly editReplyDebounced = debounceAsync(async (payload: MessagePayloadOutput) => {
+    async dispatchInteraction(interaction: Interaction) {
+        if (this.key
+            && "customId" in interaction
+            && !interaction.customId.startsWith(this.prefixCustomId())
+        ) return;
+
+        if (interaction.isButton()) {
+            let cb = this.events?.button?.get(interaction.customId);
+            cb?.(interaction);
+        } else if (interaction.isAnySelectMenu()) {
+            let cb = this.events?.select?.get(interaction.customId);
+            cb?.(interaction.values, interaction);
+        } else if (interaction.isModalSubmit()) {
+            let cb = this.events?.modalSubmit?.get(interaction.customId);
+            let form: Record<string, string> = {};
+            for (let [name, component] of interaction.fields.fields) {
+                form[name] = component.value;
+            }
+            cb?.(form, interaction);
+        };
+
+        if (interaction.isButton() || interaction.isAnySelectMenu()) {
+            let before = this.lastInteraction;
+            this.lastInteraction = interaction;
+
+            if (this.deferUpdateTimeout)
+                clearTimeout(this.deferUpdateTimeout);
+            this.deferUpdateTimeout = setTimeout(() => {
+                this.lastInteraction?.deferUpdate();
+                this.lastInteraction = null;
+            }, this.DEFER_TIME);
+
+            await before?.deferUpdate();
+        }
+    }
+
+    private async render(container: Container) {
+        if (!container.node) return;
         try {
-            await this.editReply(payload);
-            console.log("[renderer] Message updated")
-        } catch(e) {
-            console.log("[renderer] Message update error", e);
+            let payload = new PayloadBuilder(this.prefixCustomId.bind(this))
+                .createMessage(container.node);
+            this.events = payload.eventHandlers;
+            this.updateMessageDebounced(payload);
+        } catch (e) {
+            this.handleError(e as Error);
+        };
+    }
+
+
+    private readonly updateMessageDebounced = debounceAsync(async (payload: MessagePayloadOutput) => {
+        try {
+            await this.updateMessage(payload);
+        } catch (e) {
             await this.handleError(e as Error);
         }
     }, 0);
 
-    async editReply(payload: MessagePayloadOutput) {
-        try {
-            const { v2, ephemeral, ...body } = payload;
+    private async updateMessage(output: MessagePayloadOutput) {
+        const { flags, payload } = output;
 
-            if(!this.initialReplied) {
-                let flags: ("Ephemeral" | "IsComponentsV2")[] = [];
+        if (this.lastInteraction) {
+            await this.lastInteraction.update({
+                ...payload,
+            });
 
-                if(v2) flags.push("IsComponentsV2");
-                if(ephemeral) flags.push("Ephemeral");
+            this.lastInteraction = null;
+            if (this.deferUpdateTimeout)
+                clearTimeout(this.deferUpdateTimeout);
 
-                await (this.lastInteraction || this.interaction).reply({
-                    withResponse: true,
-                    flags,
-                    ...body,
-                });
+            this.emit("updatedMessage", "component");
+        } else if (this.interaction.replied || this.interaction.deferred) {
+            await this.interaction.editReply({
+                withComponents: true,
+                ...payload,
+            });
 
-                this.lastInteraction = null;
+            this.emit("updatedMessage", "interaction");
+        } else {
+            await this.interaction.reply({
+                withResponse: true,
+                flags,
+                ...payload,
+            });
 
-                this.initialReplied = true;
-            } else {
-                await (this.lastInteraction || this.interaction).editReply({
-                    withComponents: true,
-                    ...body,
-                });
-
-                this.lastInteraction = null;
-            }
-        } catch(e) {
-            await this.handleError(e as Error);
+            this.emit("updatedMessage", "reply");
         }
+
+        this.inactivityTimer.refresh();
     }
 
     async handleError(error: Error) {
         try {
+            this.emit("error", error);
+
             const content = `:warning: **Error**\n\`\`\`\n${error.toString()}\n\`\`\``;
-            
-            await this.editReply({
-                v2: true,
-                ephemeral: true,
-                components: [
-                    {
-                        type: 10,
-                        content,
-                    }
-                ],
+
+            await this.updateMessage({
+                flags: [MessageFlags.Ephemeral, MessageFlags.IsComponentsV2],
+                eventHandlers: {
+                    button: new Map(),
+                    select: new Map(),
+                },
+                payload: {
+                    components: [
+                        {
+                            type: 10,
+                            content,
+                        }
+                    ],
+                },
             });
-        } catch(e) {
-            console.log("=== UNRENDERABLE ERROR ===")
-            console.log("--- ORIGINAL ---")
-            console.log(error);
-            console.log("--- REPORT ERROR ---")
-            console.log(e);
+        } catch (e) {
+            this.emit("fatalError", e as Error);
+            console.log("[discordjsx/renderer] (fatal) Error", e);
         }
     }
 }

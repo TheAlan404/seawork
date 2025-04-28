@@ -3,21 +3,26 @@ import { DJSXEventHandler } from "../intrinsics/events";
 import { InternalNode } from "../reconciler/types";
 import { v4 } from "uuid";
 
-type EventHandlersMap = {
+export type DJSXEventHandlerMap = {
     button: Map<string, DJSXEventHandler<void, ButtonInteraction>>;
     select: Map<string, DJSXEventHandler<Snowflake[], AnySelectMenuInteraction>>;
     modalSubmit: Map<string, DJSXEventHandler<Record<string, string>, ModalSubmitInteraction>>;
 };
 
+export type InteractionMessageFlags = MessageFlags.Ephemeral
+    | MessageFlags.SuppressEmbeds
+    | MessageFlags.SuppressNotifications
+    | MessageFlags.IsComponentsV2;
+
 export type MessagePayloadOutput = {
     payload: BaseMessageOptions;
-    flags: MessageFlags[];
-    eventHandlers: Pick<EventHandlersMap, "button" | "select">;
+    flags: InteractionMessageFlags[];
+    eventHandlers: Pick<DJSXEventHandlerMap, "button" | "select">;
 };
 
 export type ModalPayloadOutput = {
     payload: APIModalInteractionResponseCallbackData;
-    eventHandlers: Pick<EventHandlersMap, "modalSubmit">;
+    eventHandlers: Pick<DJSXEventHandlerMap, "modalSubmit">;
 };
 
 
@@ -31,13 +36,18 @@ export type InstrinsicNodesMap = {
 export type IntrinsicNode = InstrinsicNodesMap[keyof React.JSX.IntrinsicElements];
 
 export class PayloadBuilder {
-    eventHandlers: EventHandlersMap = {
+    eventHandlers: DJSXEventHandlerMap = {
         button: new Map(),
         select: new Map(),
         modalSubmit: new Map(),
     };
 
-    constructor() {}
+    prefixCustomId: () => string = () => `djsx:auto:`;
+    createCustomId = () => `${this.prefixCustomId()}:${v4()}`;
+
+    constructor(prefixCustomId?: () => string) {
+        if (prefixCustomId) this.prefixCustomId = prefixCustomId;
+    }
 
     private getText(node: InternalNode): string {
         if (node.type == "#text") return node.props.text as string;
@@ -45,11 +55,11 @@ export class PayloadBuilder {
     }
 
     createMessage(node: InternalNode): MessagePayloadOutput {
-        if(node.type !== "message") throw new Error("Element isn't <message>");
+        if (node.type !== "message") throw new Error("Element isn't <message>");
 
-        let flags: MessageFlags[] = [];
-        if(node.props.v2) flags.push(MessageFlags.IsComponentsV2);
-        if(node.props.ephemeral) flags.push(MessageFlags.Ephemeral);
+        let flags: InteractionMessageFlags[] = [];
+        if (node.props.v2) flags.push(MessageFlags.IsComponentsV2);
+        if (node.props.ephemeral) flags.push(MessageFlags.Ephemeral);
 
         const components = this.toDiscordComponentsArray(node.children);
 
@@ -67,7 +77,7 @@ export class PayloadBuilder {
         const custom_id = node.props.customId || this.createCustomId();
         const components = this.toDiscordComponentsArray(node.children);
 
-        if(node.props.onSubmit)
+        if (node.props.onSubmit)
             this.eventHandlers.modalSubmit.set(custom_id, node.props.onSubmit);
 
         return {
@@ -80,12 +90,9 @@ export class PayloadBuilder {
         };
     }
 
-    private createCustomId() {
-        return `auto:${v4()}`;
-    }
-
     private toDiscordComponentsArray(children: InternalNode[]) {
-        return children.map(this.toDiscordComponent.bind(this)).filter(x => x !== null);
+        return children.map(this.toDiscordComponent.bind(this))
+            .filter(x => x !== null);
     }
 
     private toDiscordComponent(_node: InternalNode): APIMessageComponent | null {
@@ -167,8 +174,8 @@ export class PayloadBuilder {
         );
 
         const custom_id = !("skuId" in node.props || "url" in node.props) ? (node.props.customId || this.createCustomId()) : undefined;
-        if(custom_id && (node.props as any).onClick) this.eventHandlers.button.set(custom_id, (node.props as any).onClick);
-        
+        if (custom_id && (node.props as any).onClick) this.eventHandlers.button.set(custom_id, (node.props as any).onClick);
+
         return {
             type: 2,
             style,
@@ -182,7 +189,7 @@ export class PayloadBuilder {
 
     private toDiscordSelectComponent(node: InstrinsicNodesMap["select"]): any {
         const custom_id = node.props.customId || this.createCustomId();
-        if((node.props as any).onSelect)
+        if ((node.props as any).onSelect)
             this.eventHandlers.select.set(custom_id, (node.props as any).onSelect);
 
         return {

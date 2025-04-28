@@ -1,34 +1,33 @@
-import { ChatInputCommandInteraction, Interaction } from "discord.js";
-import { RendererInstance } from ".";
+import { ChatInputCommandInteraction, Collection, Interaction } from "discord.js";
+import { DJSXRenderer } from ".";
 import { ReactNode } from "react";
+import { v4 } from "uuid";
 
-export class RenderersManager {
-    instances: Set<RendererInstance> = new Set();
+export class DJSXRendererManager {
+    renderers: Collection<string, DJSXRenderer> = new Collection();
 
-    constructor() {
-        
-    }
+    constructor() {}
 
     create(
         interaction: ChatInputCommandInteraction,
         node?: ReactNode,
     ) {
-        const renderer = new RendererInstance(
+        const renderer = new DJSXRenderer(
             interaction,
             node,
         );
-        
-        renderer.mount();
-        console.log("Renderer created", renderer);
-        this.instances.add(renderer);
+
+        this.add(renderer);
     }
+    
+    add(renderer: DJSXRenderer) {
+        if(!renderer.key) renderer.key = v4();
+        this.renderers.set(renderer.key, renderer);
+    };
 
     dispatchInteraction(int: Interaction) {
-        console.log("Dispatching interactions to ", this.instances)
-        for(let inst of this.instances) {
-            inst.events.dispatch(int);
-        }
+        this.renderers.forEach((renderer) => renderer.dispatchInteraction(int));
     }
 }
 
-export const renderers = new RenderersManager();
+export const renderers = new DJSXRendererManager();
